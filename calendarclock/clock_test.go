@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/calendar/calendarclock"
+	"github.com/faustbrian/go-calendar/calendarclock"
 )
 
 type fixedClock struct{ now time.Time }

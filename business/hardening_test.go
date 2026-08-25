@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
+	calendar "github.com/faustbrian/go-calendar"
 )
 
 func TestHolidayAndCalendarRejectHostileData(t *testing.T) {

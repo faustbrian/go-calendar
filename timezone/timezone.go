@@ -12,7 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
+	calendar "github.com/faustbrian/go-calendar"
 )
 
 var (

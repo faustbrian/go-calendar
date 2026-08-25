@@ -4,7 +4,7 @@ package calendarconfig
 import (
 	"fmt"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
+	calendar "github.com/faustbrian/go-calendar"
 )
 
 // Date is a config ValueUnmarshaler for a required canonical civil date.

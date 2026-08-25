@@ -1,4 +1,4 @@
-module github.com/faustbrian/golib/pkg/calendar
+module github.com/faustbrian/go-calendar
 
 go 1.26.6
 

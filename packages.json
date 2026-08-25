@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-calendar",
+  "packages": [
+    {
+      "module_directory": ".",
+      "directory": ".",
+      "name": "calendar",
+      "import_path": "github.com/faustbrian/go-calendar",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "business",
+      "name": "business",
+      "import_path": "github.com/faustbrian/go-calendar/business",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "calendarclock",
+      "name": "calendarclock",
+      "import_path": "github.com/faustbrian/go-calendar/calendarclock",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "calendarconfig",
+      "name": "calendarconfig",
+      "import_path": "github.com/faustbrian/go-calendar/calendarconfig",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "calendartemporal",
+      "name": "calendartemporal",
+      "import_path": "github.com/faustbrian/go-calendar/calendartemporal",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "calendartest",
+      "name": "calendartest",
+      "import_path": "github.com/faustbrian/go-calendar/calendartest",
+      "kind": "test support",
+      "production": false,
+      "executable": true,
+      "coverage_required": false,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "calendarvalidation",
+      "name": "calendarvalidation",
+      "import_path": "github.com/faustbrian/go-calendar/calendarvalidation",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "calendarwire",
+      "name": "calendarwire",
+      "import_path": "github.com/faustbrian/go-calendar/calendarwire",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "postgres",
+      "name": "postgres",
+      "import_path": "github.com/faustbrian/go-calendar/postgres",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "scripts",
+      "name": "main",
+      "import_path": "github.com/faustbrian/go-calendar/scripts",
+      "kind": "tooling",
+      "production": false,
+      "executable": false,
+      "coverage_required": false,
+      "build_required": false,
+      "build_tags": []
+    },
+    {
+      "module_directory": ".",
+      "directory": "timezone",
+      "name": "timezone",
+      "import_path": "github.com/faustbrian/go-calendar/timezone",
+      "kind": "public",
+      "production": true,
+      "executable": true,
+      "coverage_required": true,
+      "build_required": true,
+      "build_tags": []
+    }
+  ]
+}

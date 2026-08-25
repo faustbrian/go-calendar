@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
+	calendar "github.com/faustbrian/go-calendar"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 

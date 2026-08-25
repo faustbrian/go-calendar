@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
+	calendar "github.com/faustbrian/go-calendar"
 )
 
 // ErrClockRequired identifies a missing wall-clock capability.

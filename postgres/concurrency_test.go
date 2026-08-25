@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
-	calendarpg "github.com/faustbrian/golib/pkg/calendar/postgres"
+	calendar "github.com/faustbrian/go-calendar"
+	calendarpg "github.com/faustbrian/go-calendar/postgres"
 )
 
 func TestPostgreSQLCodecValuesConcurrentReadUse(t *testing.T) {

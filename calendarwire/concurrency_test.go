@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
-	"github.com/faustbrian/golib/pkg/calendar/calendarwire"
+	calendar "github.com/faustbrian/go-calendar"
+	"github.com/faustbrian/go-calendar/calendarwire"
 )
 
 func TestWireCodecConcurrentUse(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/golib/pkg/calendar"
-	calendartz "github.com/faustbrian/golib/pkg/calendar/timezone"
+	calendar "github.com/faustbrian/go-calendar"
+	calendartz "github.com/faustbrian/go-calendar/timezone"
 )
 
 func TestConcurrentTimezoneConversion(t *testing.T) {
