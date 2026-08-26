@@ -24,10 +24,6 @@ versioning.
   link checks, package-specific documentation gates, and repository-local
   contributor guidance.
 
-### Documentation
-
-- Link the package README to the repository-wide Golib documentation portal.
-
 ### Changed
 
 - Publish the module from its standalone `github.com/faustbrian/go-calendar` identity while preserving its documented API and behavior.

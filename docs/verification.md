@@ -1,4 +1,4 @@
-# Hardening evidence
+# Verification
 
 | Requirement | Authoritative local evidence |
 | --- | --- |

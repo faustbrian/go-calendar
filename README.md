@@ -60,13 +60,8 @@ Start with the [five-minute guide](docs/quickstart.md), then use the
 `make check` reproduces every blocking local gate. `make check-all` also shows
 advisory NilAway findings. Production packages maintain meaningful 100.0%
 statement coverage; `calendartest` is test-support code and is excluded from
-that denominator. See [hardening evidence](docs/hardening.md).
+that denominator. See [verification](docs/verification.md).
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-## Ecosystem
-
-Use the [Golib documentation portal](https://github.com/faustbrian/golib/blob/main/docs/index.md)
-to choose companion packages, supported stacks, recipes, and operations guidance.
