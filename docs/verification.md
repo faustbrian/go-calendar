@@ -4,31 +4,22 @@
 | --- | --- |
 | Gregorian and ISO correctness | Exhaustive years 1–9999 differential test |
 | Clamp/reject/overflow and negatives | Arithmetic matrix plus 19 killed mutations |
-| Gap/fold and timezone drift | Transition corpus and `make timezone` |
+| Gap/fold and timezone drift | Transition corpus and the typed timezone test operation |
 | Immutable bounded business rules | Property/hostile-input tests and race suite |
 | Canonical hostile parsing | Fuzz targets and exact coverage |
 | PostgreSQL finite/infinity round trip | Native pgx codec and live integration tests |
 | Concurrency | Shared calendar, location, codec, and corpus tests under race |
-| Production statement coverage | `make coverage` reports exactly 100.0% |
-| Performance and allocations | `make benchmark` plus allocation-budget tests |
+| Production statement coverage | `golib coverage --module .` reports exactly 100.0% |
+| Performance and allocations | `golib check --module .` plus allocation-budget tests |
 | Vulnerabilities and analyzers | vet, Staticcheck, golangci-lint, govulncheck |
 
 ## Local release command matrix
 
 | Command | Scope | Latest local result |
 | --- | --- | --- |
-| `make tidy-check format-check vet staticcheck lint` | module and static quality | passed, zero findings |
-| `make test` | unit, properties, fixtures, examples | passed |
-| `make race` | all packages and immutable concurrent use | passed |
-| `make coverage` | all runtime packages | exactly 100.0% |
-| `make fuzz FUZZ_TIME=2s` | nine hostile-input targets | passed |
-| `make mutation` | 19 high-risk semantic mutants | 19/19 killed |
-| `make timezone` | DST, aliases, unusual offsets, ranges | passed |
-| `make integration` | PostgreSQL date/infinity under race | passed on pinned PostgreSQL 18 |
-| `make benchmark` | parse, arithmetic, ISO, business, pgx, timezone | passed |
-| `make provenance docs api-compat` | governance and publication artifacts | passed |
-| `make vuln workflows` | vulnerability and workflow validation | passed |
-| `make nilaway` | advisory nil analysis | passed with zero findings |
+| `golib repository check` | manifests and repository policy | required |
+| `golib check --module .` | tests, race, coverage, mutation, fuzz, API, docs, analyzers, PostgreSQL, provenance, and benchmarks | required |
+| Shared CI `Required` job | hosted workflow and CodeQL contract | required |
 
 See the [Gregorian/ISO vectors](gregorian-iso-vectors.md) and
 [timezone corpus](timezone-corpus.md) for the human-reviewable truth tables.
@@ -44,7 +35,7 @@ See the [Gregorian/ISO vectors](gregorian-iso-vectors.md) and
 | Clamp, reject, overflow, and signed movement | `TestArithmeticPolicyMatrix`, `TestDateArithmeticPolicies`, and `TestNamedSubtractionAndComponentDifference` |
 | Policy-permitted add/subtract inverses | `TestMonthArithmeticInverseWhenDayIsPreserved` plus `FuzzDateArithmeticNeverPanics` |
 | Minimum, maximum, zero, native integer overflow, and unsupported policy states | `TestDateDayArithmeticRejectsSupportedRangeOverflow`, `TestDateAndPeriodEdgeContracts`, and `TestTypedPeriodEdgeContracts` |
-| Mutation sensitivity | `make mutation` changes leap, parser, clamp, reject, overflow, multiplication, negative movement, both date/month range edges, business admission/counting/search, and timezone gap/fold logic |
+| Mutation sensitivity | `golib mutation --module .` requires every viable package mutant to be killed |
 
 ### Timezone and DST
 
@@ -86,7 +77,7 @@ See the [Gregorian/ISO vectors](gregorian-iso-vectors.md) and
 | Gregorian/ISO truth tables and arithmetic policy matrix | [Gregorian and ISO vectors](gregorian-iso-vectors.md) and [arithmetic](arithmetic.md) |
 | Timezone transitions, ambiguity, and tzdata compatibility corpus | [Timezone corpus](timezone-corpus.md) and [timezone guidance](timezone.md) |
 | Business provenance, revision, and resource report | [Business calendars](business.md) and [holiday datasets](holiday-datasets.md) |
-| Mutation, fuzz, race, PostgreSQL, and benchmark evidence | This document, repository scripts, and [performance](performance.md) |
+| Mutation, fuzz, race, PostgreSQL, and benchmark evidence | This document, `.golib.yaml`, and [performance](performance.md) |
 | API, Carbon migration, timezone, business, security, and FAQ documentation | [API](api.md), [Carbon migration](carbon-migration.md), [timezone](timezone.md), [business](business.md), [security](security.md), and [FAQ](faq.md) |
 | Current release notes | [Changelog](../CHANGELOG.md) |
 

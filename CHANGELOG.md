@@ -5,6 +5,12 @@ versioning.
 
 ## Unreleased
 
+### Changed
+
+- Adopt the versioned shared `golib` repository contract for local and hosted
+  verification while retaining package-owned API, provenance, and mutation
+  evidence.
+
 ### Documentation
 
 - Remove completed implementation plans from the release tree and retain

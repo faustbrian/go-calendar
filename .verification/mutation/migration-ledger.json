@@ -161,6 +161,105 @@
       "module": ".",
       "package": "timezone",
       "report_sha256": "3307e85be20d59d4b0ceaccaf420dbd5bdc81463dc62f2aa622bd11257b5f777"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "3332219e2556899a97da56817a08faccba06a5890d42a4db6305219b7e3c4bdb",
+      "replacement_gate_input_digest": "0d1e03bdcb0e941bee272ce4ca31121f99a6254c47ffbd004dd6f0a222dd5a64",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": ".",
+      "report_sha256": "05bd0b94bc1b9617a2b9a82c0fcf4025f272764dc36046201504f59fcae38adf"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "c33fe7c5400f10f3bc049fa30b396d8e05f6f7aa278377bd3001b2dec525a9c8",
+      "replacement_gate_input_digest": "67fa28760cedc9eb945fdc7ec59374d72f8b2a011b605304326e9eaab45d1607",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "business",
+      "report_sha256": "8aa8d36170465f3c73a57fa70169236708ad79341aefae5cc62c57b0995336fa"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "b97646e5461f6b126a70c097489cc635c0a43ce9562e8a969230ee8855d26ab9",
+      "replacement_gate_input_digest": "7620c5a1db908b3066e2f6ab39318f6d2d8a50154e8f9a394c0462dc604c7f15",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "calendarclock",
+      "report_sha256": "b84c3fac35f0a1dce30b571ba2217a9cf136a95393cec02a23396dfaca502f76"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "35fed8439ff0a24c9d8ce117848818697c66edaba735ef2f3fde49b419fc9f1d",
+      "replacement_gate_input_digest": "8711bacfa748cbd3362ffa1b5c6b5c59db6eec04e2727ec9d587d7395a60d02f",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "calendarconfig",
+      "report_sha256": "ee92609ecc0cea20d8169a6d7906175bf9b1ab5e562968edf4a2dc19699fd3d7"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "d007c06d6ad90b9f8aca5927158a017e75f3a307d089a90d7f87148ac9964dab",
+      "replacement_gate_input_digest": "4ec9ecee696758b6bd2e0238ca11c54d2b99c2cf558233bc40120902937c40f4",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "calendartemporal",
+      "report_sha256": "df32111ff75b5be5ac23d0c771ec3a9b61170c53bd14cc60a85ff289953f039e"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "36199b08353369dc54093a1bbb5fd5a0dd8a6a0e1bc32077ca042c1930a5f00a",
+      "replacement_gate_input_digest": "360d19e488ac32fcd3adfd8e8abf2e7b436bae85c0003984a2be8fd4116792ab",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "calendarvalidation",
+      "report_sha256": "62bfc30faabc6b9390337fb78d964b6c5562515a1de5230051e4b2038b7c1c16"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "140f1705a8eec85b5fbac36b232115b6221a740ee86203a9bea3dba13c73292b",
+      "replacement_gate_input_digest": "03a438b2716693f9af5ea265d8193ffe083647ef3b2aeeb976916d4e3a5200dc",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "calendarwire",
+      "report_sha256": "81c51e038862c845c483005dd2f6c891e52b95978d46f9f8f722fcda7d6f8c99"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "cc5740268132a83822ae7ed7f433c20b72f384588725fe568c9f0334a0f7b10c",
+      "replacement_gate_input_digest": "dc28cd8f13bbdc57a51897875935c69463de88262d81ec689b6627d3ac2d36d0",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "postgres",
+      "report_sha256": "e0dd698e392cb59800e9e9f12a504354775e919bf089706cd7173c26a70cc195"
+    },
+    {
+      "execution_revision": "c09c5268b1facb88317f933913b2e7cf4377948b",
+      "gate_input_digest": "ee299cf388d427f8b2987c2907945fa41ecad277cb383710a3e1bfad62d9f402",
+      "replacement_gate_input_digest": "48fe0edbb2a1cbc3263761981808f6a7641dbd3205a89cc29c5cc2616815806f",
+      "migration_reason": "Shared tooling relocation changes only verifier input identity; package production and test content is unchanged.",
+      "gremlins_version": "v0.6.0",
+      "gremlins_verifier_sha256": "9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+      "module": ".",
+      "package": "timezone",
+      "report_sha256": "e5f219126a59c7079a2bab56fb04be9612e61520789581e929baf51550596a9c"
     }
   ]
 }
