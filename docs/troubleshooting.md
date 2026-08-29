@@ -18,10 +18,9 @@ Inspect weekend/holiday configuration before increasing it.
 ## Timezone results changed
 
 Compare Go, OS/container tzdata, zone identity, and stored policy versions. Run
-`make timezone` and review the corpus.
+`golib check --module .` and review the corpus.
 
 ## Integration cannot start
 
-Supply `POSTGRES_URL` or start Docker. `make integration` never accesses a
-production database unless a caller explicitly supplies such a URL; use only a
-disposable test database.
+The shared `golib` service fixture starts an isolated PostgreSQL instance for
+`golib check --module .`. Never point verification at a production database.

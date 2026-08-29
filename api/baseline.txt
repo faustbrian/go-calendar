@@ -1,4 +1,3 @@
-PACKAGE github.com/faustbrian/go-calendar
 package calendar // import "github.com/faustbrian/go-calendar"
 
 Package calendar provides immutable civil-calendar values and arithmetic.
@@ -424,7 +423,6 @@ func (ym YearMonth) String() string
 func (ym YearMonth) Year() int
     Year returns the Gregorian year, or zero when invalid.
 
-PACKAGE github.com/faustbrian/go-calendar/business
 package business // import "github.com/faustbrian/go-calendar/business"
 
 Package business provides immutable, versioned, and bounded business calendars
@@ -559,7 +557,6 @@ type Provenance struct {
 }
     Provenance records optional origin and licensing data for supplied datasets.
 
-PACKAGE github.com/faustbrian/go-calendar/calendarclock
 package calendarclock // import "github.com/faustbrian/go-calendar/calendarclock"
 
 Package calendarclock adapts a narrow wall-clock source to civil dates.
@@ -583,7 +580,6 @@ type Clock interface {
 }
     Clock is the exact wall-clock capability provided by clock.Clock.
 
-PACKAGE github.com/faustbrian/go-calendar/calendarconfig
 package calendarconfig // import "github.com/faustbrian/go-calendar/calendarconfig"
 
 Package calendarconfig provides strict config-compatible civil values.
@@ -610,7 +606,6 @@ func (d *Date) UnmarshalConfigValue(value any) error
 func (d *Date) UnmarshalText(text []byte) error
     UnmarshalText decodes a canonical configuration value.
 
-PACKAGE github.com/faustbrian/go-calendar/calendartemporal
 package calendartemporal // import "github.com/faustbrian/go-calendar/calendartemporal"
 
 Package calendartemporal converts civil boundaries into values suitable for
@@ -651,7 +646,6 @@ func (r InstantRange) Includes(value time.Time) bool
 func (r InstantRange) Start() time.Time
     Start returns the inclusive instant boundary.
 
-PACKAGE github.com/faustbrian/go-calendar/calendartest
 package calendartest // import "github.com/faustbrian/go-calendar/calendartest"
 
 Package calendartest provides deterministic fixtures and assertions for
@@ -691,7 +685,6 @@ func TransitionVectors() []TransitionVector
     TransitionVectors returns a fresh corpus covering representative IANA gaps,
     folds, aliases, unusual offsets, and date-line movement.
 
-PACKAGE github.com/faustbrian/go-calendar/calendarvalidation
 package calendarvalidation // import "github.com/faustbrian/go-calendar/calendarvalidation"
 
 Package calendarvalidation provides dependency-neutral rules that can be wrapped
@@ -717,7 +710,6 @@ func DateRange(minimum, maximum calendar.Date) (Rule, error)
 func ValidDate() Rule
     ValidDate returns a rule that rejects the Date zero value.
 
-PACKAGE github.com/faustbrian/go-calendar/calendarwire
 package calendarwire // import "github.com/faustbrian/go-calendar/calendarwire"
 
 Package calendarwire provides bounded canonical wire helpers for Date.
@@ -745,7 +737,6 @@ func DecodeDate(payload []byte) (calendar.Date, error)
 func EncodeDate(date calendar.Date) ([]byte, error)
     EncodeDate encodes a Date as the version-1 canonical JSON string.
 
-PACKAGE github.com/faustbrian/go-calendar/postgres
 package postgres // import "github.com/faustbrian/go-calendar/postgres"
 
 Package postgres provides database/sql and pgx adapters for PostgreSQL date.
@@ -829,7 +820,6 @@ const (
 	// PositiveInfinity represents PostgreSQL infinity.
 	PositiveInfinity InfinityKind = 1
 )
-PACKAGE github.com/faustbrian/go-calendar/timezone
 package timezone // import "github.com/faustbrian/go-calendar/timezone"
 
 Package timezone converts between civil local values and instants using explicit

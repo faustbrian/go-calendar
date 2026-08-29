@@ -8,6 +8,6 @@ Use `postgres.InfinityDate` only when the schema intentionally admits
 `-infinity` or `infinity`. Those sentinels are never coerced to ordinary civil
 dates. Native pgx text/binary codecs and a live PostgreSQL round trip are tested.
 
-`make integration` uses `POSTGRES_URL` when supplied or starts a disposable
-PostgreSQL 18 Docker container. CI runs the same tagged suite across supported
-PostgreSQL versions.
+`golib check --module .` starts a task-owned PostgreSQL fixture and runs the
+tagged integration suite. CI runs the same contract against the pinned service
+identity.

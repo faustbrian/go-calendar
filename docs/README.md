@@ -21,5 +21,5 @@
 - [Compatibility](compatibility.md)
 - [Troubleshooting](troubleshooting.md)
 - [FAQ](faq.md)
-- [Hardening evidence](hardening.md)
+- [Verification](verification.md)
 - [Release process](release.md)

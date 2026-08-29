@@ -1,6 +1,6 @@
 # Performance
 
-Benchmarks use `make benchmark`. On an Apple M4 Max with Go 1.26.5, representative
+Benchmarks run through `golib check --module .`. On an Apple M4 Max with Go 1.26.5, representative
 local measurements were approximately:
 
 | Operation | Time | Allocations |

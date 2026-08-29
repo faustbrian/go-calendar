@@ -16,5 +16,5 @@ policy, intended local value, and tzdata/application version when replay matters
 
 The compatibility corpus covers New York gap/fold, `US/Eastern` alias,
 Lord Howe's 30-minute fold, Kathmandu's +05:45 offset, Helsinki's 23-hour day,
-and Apia's 2011 date-line skip. Run `make timezone` after any toolchain or
+and Apia's 2011 date-line skip. Run `golib check --module .` after any toolchain or
 tzdata update and review intentional drift before deployment.

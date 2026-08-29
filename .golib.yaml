@@ -1,0 +1,105 @@
+schema_version: 1
+tool_version: v1.0.4
+tool_checksums_sha256: 6c1ee70e3fa7aa333d12420dc78d7740f4de78717d1979eeb8a5f70a2a124ba0
+manifest:
+  modules: modules.json
+  packages: packages.json
+evidence:
+  root: ".verification"
+mutation:
+  root: ".verification/mutation"
+  imports:
+  - module: "."
+    archive: ".verification/mutation/bootstrap/root.zip"
+    ledger: ".verification/mutation/migration-ledger.json"
+api:
+  baselines:
+  - module: "."
+    mode: go-doc
+    path: api/baseline.txt
+    packages:
+    - "."
+    - ./business
+    - ./calendarclock
+    - ./calendarconfig
+    - ./calendartemporal
+    - ./calendartest
+    - ./calendarvalidation
+    - ./calendarwire
+    - ./postgres
+    - ./timezone
+operations:
+- module: "."
+  gate: test
+  steps:
+  - type: go-test
+    packages: ["./..."]
+    run: 'DST|Fold|Gap|Timezone|Transition|Location|DayRange'
+    timeout: 20m
+  - type: make
+    makefile: verification/package.mk
+    target: provenance
+    timeout: 20m
+- module: "."
+  gate: fuzz
+  steps:
+  - type: go-test
+    packages: ["."]
+    fuzz: '^FuzzParseDate$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["."]
+    fuzz: '^FuzzTypedCalendarParsers$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["."]
+    fuzz: '^FuzzDateArithmeticNeverPanics$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./business"]
+    fuzz: '^FuzzHolidayData$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./business"]
+    fuzz: '^FuzzCalendarConfiguration$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./calendarwire"]
+    fuzz: '^FuzzDecodeDate$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./postgres"]
+    fuzz: '^FuzzDateScan$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./timezone"]
+    fuzz: '^FuzzLoadLocation$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./timezone"]
+    fuzz: '^FuzzResolveLocalDateTime$'
+    budget: 2s
+    timeout: 2m
+- module: "."
+  gate: docs
+  steps:
+  - type: go-test
+    packages: ["./..."]
+    run: '^Example'
+    timeout: 20m
+- module: "."
+  gate: benchmark
+  steps:
+  - type: go-test
+    packages: ["./..."]
+    benchmark: "."
+    budget: 100ms
+    timeout: 20m
