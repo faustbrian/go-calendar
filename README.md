@@ -52,6 +52,9 @@ Start with the [five-minute guide](docs/quickstart.md), then use the
   narrow `Now() time.Time` capability.
 - `temporal` owns interval and set algebra; [calendartemporal](calendartemporal)
   supplies explicit instant boundaries and bounded date sequences.
+- Caller-provided clocks, locations, policies, and byte slices are borrowed
+  only for the call and are not retained. Business configuration maps and
+  slices are defensively copied.
 - This project does not provide clocks, timers, cron, scheduling, natural
   language parsing, opening hours, or a global holiday database.
 
@@ -61,6 +64,10 @@ Start with the [five-minute guide](docs/quickstart.md), then use the
 NilAway findings. Production packages maintain meaningful 100.0%
 statement coverage; `calendartest` is test-support code and is excluded from
 that denominator. See [verification](docs/verification.md).
+
+For ecosystem-wide selection and ownership guidance, see the versioned
+[Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.3.0/docs/ecosystem/README.md)
+and its [Domain utilities family](https://github.com/faustbrian/go-library-tools/blob/v1.3.0/docs/ecosystem/design-language.md#package-families-and-selection).
 
 ## License
 
