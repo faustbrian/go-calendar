@@ -7,10 +7,10 @@ versioning.
 
 ### Changed
 
-- Adopt the `go-library-tools` v1.3.0 schema-v2 cohesion contract and local
+- Adopt the `go-library-tools` v1.4.0 schema-v2 cohesion contract and local
   `make cohesion` gate without changing calendar API or runtime behavior.
-- Pin reusable CI to the v1.3.0 workflow and enforce cohesion metadata in the
-  repository's required CI contract.
+- Pin reusable CI to the immutable v1.4.0 W14-enforcement workflow and enforce
+  cohesion metadata in the repository's required CI contract.
 
 - Adopt the versioned shared `golib` repository contract for local and hosted
   verification while retaining package-owned API, provenance, and mutation
@@ -20,7 +20,7 @@ versioning.
 
 - Publish the module's family, capabilities, ownership, lifecycle, supported
   environments, package selection, and delivery status, and link the README to
-  the immutable v1.3.0 ecosystem index and family guidance.
+  the immutable v1.4.0 ecosystem index and family guidance.
 
 - Remove completed implementation plans from the release tree and retain
   package-owned documentation as the maintained reference.
