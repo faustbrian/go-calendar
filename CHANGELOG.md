@@ -7,6 +7,11 @@ versioning.
 
 ### Changed
 
+- Add canonical `adapters/clock`, `adapters/config`, `adapters/postgres`,
+  `adapters/temporal`, `adapters/validation`, and `adapters/wire` entry points.
+  The previously released package paths remain supported deprecated
+  compatibility paths with unchanged public contracts.
+
 - Adopt the `go-library-tools` v1.4.0 schema-v2 cohesion contract and local
   `make cohesion` gate without changing calendar API or runtime behavior.
 - Pin reusable CI to the immutable v1.4.0 W14-enforcement workflow and enforce

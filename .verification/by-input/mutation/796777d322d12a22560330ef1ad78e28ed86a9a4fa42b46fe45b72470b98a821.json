@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-calendar",
+  "module": ".",
+  "package": "adapters/clock",
+  "gate": "mutation",
+  "input_digest": "sha256:796777d322d12a22560330ef1ad78e28ed86a9a4fa42b46fe45b72470b98a821",
+  "verifier_digest": "sha256:9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+  "result": "passed",
+  "report_digest": "sha256:3ff4a8b08d8d9079fc5abe8ba2a1bc06690129b33a884c61ae9e5a0fdf2ccf8b",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.26.6",
+    "gremlins_binary_sha256": "sha256:e05bf25d661b16ab96d6f2e17aed481d393930e0f24205cc341b010f887368a0"
+  },
+  "completed_at": "2026-09-09T02:41:15.431214Z"
+}

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	calendar "github.com/faustbrian/go-calendar"
-	"github.com/faustbrian/go-calendar/calendarclock"
+	calendarclock "github.com/faustbrian/go-calendar/adapters/clock"
 	"github.com/faustbrian/go-calendar/calendartest"
 )
 

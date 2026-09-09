@@ -1,25 +1,32 @@
 // Package calendarwire provides bounded canonical wire helpers for Date.
+//
+// Deprecated: use github.com/faustbrian/go-calendar/adapters/wire. This package
+// remains supported for the longer of 180 days after successor public
+// availability and two subsequently published stable root-module minor
+// releases.
 package calendarwire
 
 import (
 	"cmp"
-	"errors"
 	"slices"
 
 	calendar "github.com/faustbrian/go-calendar"
+	adapter "github.com/faustbrian/go-calendar/adapters/wire"
 )
 
 const (
 	// Version identifies the stable canonical date wire contract.
-	Version = 1
+	Version = adapter.Version
 	// MaxBytes bounds an encoded canonical date including JSON syntax.
-	MaxBytes = 64
+	MaxBytes = adapter.MaxBytes
 )
 
 // ErrSizeLimit identifies input exceeding MaxBytes.
-var ErrSizeLimit = errors.New("calendar/wire: size limit exceeded")
+var ErrSizeLimit = adapter.ErrSizeLimit
 
-// EncodeDate encodes a Date as the version-1 canonical JSON string.
+// EncodeDate encodes a Date as the version-1 canonical JSON string. The
+// compatibility implementation remains local because another package-call
+// boundary changes its published allocation budget.
 func EncodeDate(date calendar.Date) ([]byte, error) {
 	if !date.IsValid() {
 		return nil, calendar.ErrInvalidDate
