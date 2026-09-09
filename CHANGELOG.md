@@ -5,6 +5,8 @@ versioning.
 
 ## Unreleased
 
+## 1.1.0 - 2026-09-09
+
 ### Changed
 
 - Add canonical `adapters/clock`, `adapters/config`, `adapters/postgres`,
