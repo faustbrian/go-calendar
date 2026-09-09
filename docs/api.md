@@ -33,12 +33,15 @@
 
 ## Persistence and adapters
 
-- `postgres.Date` is finite and non-null. `postgres.InfinityDate` is the
-  distinct finite/infinity sum type. Both implement SQL and pgx interfaces.
-- `calendarclock.Today` composes with `clock.Clock` structurally.
-- `calendartemporal` creates bounded sequences and exclusive instant endpoints.
-- `calendarconfig.Date`, `calendarvalidation.Rule`, and `calendarwire` provide
-  strict adapter seams.
+- `adapters/postgres.Date` is finite and non-null.
+  `adapters/postgres.InfinityDate` is the distinct finite/infinity sum type.
+  Both implement SQL and pgx interfaces.
+- `adapters/clock.Today` composes with `clock.Clock` structurally.
+- `adapters/temporal` creates bounded sequences and exclusive instant endpoints.
+- `adapters/config.Date`, `adapters/validation.Rule`, and `adapters/wire`
+  provide strict adapter seams.
+- The original top-level adapter imports remain deprecated compatibility paths
+  with their released public type and sentinel identities.
 - `calendartest` provides clocks, assertions, locations, and transition vectors.
 
 The generated, compiler-derived public API snapshot is

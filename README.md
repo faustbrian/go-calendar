@@ -48,10 +48,14 @@ Start with the [five-minute guide](docs/quickstart.md), then use the
 
 ## Boundaries
 
-- `clock` owns current time; [calendarclock](calendarclock) accepts its
+- `clock` owns current time; [adapters/clock](adapters/clock) accepts its
   narrow `Now() time.Time` capability.
-- `temporal` owns interval and set algebra; [calendartemporal](calendartemporal)
+- `temporal` owns interval and set algebra; [adapters/temporal](adapters/temporal)
   supplies explicit instant boundaries and bounded date sequences.
+- Canonical configuration, validation, wire, and PostgreSQL integrations live
+  under [`adapters/`](docs/adapters.md). The original top-level adapter paths
+  remain supported compatibility facades during the documented migration
+  interval.
 - Caller-provided clocks, locations, policies, and byte slices are borrowed
   only for the call and are not retained. Business configuration maps and
   slices are defensively copied.

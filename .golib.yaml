@@ -19,6 +19,12 @@ api:
     path: api/baseline.txt
     packages:
     - "."
+    - ./adapters/clock
+    - ./adapters/config
+    - ./adapters/postgres
+    - ./adapters/temporal
+    - ./adapters/validation
+    - ./adapters/wire
     - ./business
     - ./calendarclock
     - ./calendarconfig
@@ -66,6 +72,16 @@ operations:
   - type: go-test
     packages: ["./business"]
     fuzz: '^FuzzCalendarConfiguration$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./adapters/wire"]
+    fuzz: '^FuzzDecodeDate$'
+    budget: 2s
+    timeout: 2m
+  - type: go-test
+    packages: ["./adapters/postgres"]
+    fuzz: '^FuzzDateScan$'
     budget: 2s
     timeout: 2m
   - type: go-test

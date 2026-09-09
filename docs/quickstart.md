@@ -29,3 +29,21 @@ instant. Folds never select an occurrence silently.
 Construct a `business.Calendar` with an application revision, weekend set, and
 holidays. Every iterative method takes a positive search limit. Counts use a
 half-open `[start,end)` date range and return a negative count when reversed.
+
+## Adapters
+
+Use target-oriented imports for optional integration:
+
+```go
+import (
+    calendarpostgres "github.com/faustbrian/go-calendar/adapters/postgres"
+    calendarwire "github.com/faustbrian/go-calendar/adapters/wire"
+)
+
+payload, err := calendarwire.EncodeDate(date)
+databaseValue, err := calendarpostgres.NewDate(date).Value()
+```
+
+The adapters are synchronous and retain no caller-owned clocks, locations,
+payloads, connections, or other resources. See [adapter migration](migration.md)
+when updating an existing v1 consumer.

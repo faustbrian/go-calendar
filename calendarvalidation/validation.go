@@ -1,19 +1,22 @@
 // Package calendarvalidation provides dependency-neutral rules that can be
 // wrapped by validation ValidatorFunc without coupling calendar core to it.
+//
+// Deprecated: use github.com/faustbrian/go-calendar/adapters/validation. This
+// package remains supported for the longer of 180 days after successor public
+// availability and two subsequently published stable root-module minor
+// releases.
 package calendarvalidation
 
 import (
-	"errors"
-	"fmt"
-
 	calendar "github.com/faustbrian/go-calendar"
+	adapter "github.com/faustbrian/go-calendar/adapters/validation"
 )
 
 var (
 	// ErrInvalidDate identifies an invalid Date value.
-	ErrInvalidDate = errors.New("calendar/validation: invalid date")
+	ErrInvalidDate = adapter.ErrInvalidDate
 	// ErrDateOutOfRange identifies a Date outside inclusive configured bounds.
-	ErrDateOutOfRange = errors.New("calendar/validation: date out of range")
+	ErrDateOutOfRange = adapter.ErrDateOutOfRange
 )
 
 // Rule is a deterministic, side-effect-free date validation function.
@@ -21,29 +24,11 @@ type Rule func(calendar.Date) error
 
 // ValidDate returns a rule that rejects the Date zero value.
 func ValidDate() Rule {
-	return func(date calendar.Date) error {
-		if !date.IsValid() {
-			return ErrInvalidDate
-		}
-		return nil
-	}
+	return Rule(adapter.ValidDate())
 }
 
 // DateRange returns an inclusive bounded date rule.
 func DateRange(minimum, maximum calendar.Date) (Rule, error) {
-	comparison, err := minimum.Compare(maximum)
-	if err != nil || comparison > 0 {
-		return nil, fmt.Errorf("%w: invalid bounds", ErrDateOutOfRange)
-	}
-	return func(date calendar.Date) error {
-		if !date.IsValid() {
-			return ErrInvalidDate
-		}
-		below, _ := date.Compare(minimum)
-		above, _ := date.Compare(maximum)
-		if below < 0 || above > 0 {
-			return ErrDateOutOfRange
-		}
-		return nil
-	}, nil
+	rule, err := adapter.DateRange(minimum, maximum)
+	return Rule(rule), err
 }

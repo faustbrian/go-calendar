@@ -423,6 +423,230 @@ func (ym YearMonth) String() string
 func (ym YearMonth) Year() int
     Year returns the Gregorian year, or zero when invalid.
 
+package calendarclock // import "github.com/faustbrian/go-calendar/adapters/clock"
+
+Package calendarclock adapts a narrow wall-clock source to civil dates.
+
+VARIABLES
+
+var ErrClockRequired = errors.New("calendar/clock: clock required")
+    ErrClockRequired identifies a missing wall-clock capability.
+
+
+FUNCTIONS
+
+func Today(clock Clock, location *time.Location) (calendar.Date, error)
+    Today obtains the civil date observed in an explicit location.
+
+
+TYPES
+
+type Clock interface {
+	Now() time.Time
+}
+    Clock is the exact wall-clock capability provided by clock.Clock.
+
+package calendarconfig // import "github.com/faustbrian/go-calendar/adapters/config"
+
+Package calendarconfig provides strict config-compatible civil values.
+
+TYPES
+
+type Date struct {
+	// Has unexported fields.
+}
+    Date is a config ValueUnmarshaler for a required canonical civil date.
+
+func NewDate(date calendar.Date) Date
+    NewDate wraps a calendar Date.
+
+func (d Date) CalendarDate() calendar.Date
+    CalendarDate returns the decoded civil date.
+
+func (d Date) MarshalText() ([]byte, error)
+    MarshalText returns the canonical configuration value.
+
+func (d *Date) UnmarshalConfigValue(value any) error
+    UnmarshalConfigValue accepts only a canonical date string.
+
+func (d *Date) UnmarshalText(text []byte) error
+    UnmarshalText decodes a canonical configuration value.
+
+package calendarpostgres // import "github.com/faustbrian/go-calendar/adapters/postgres"
+
+Package calendarpostgres provides database/sql and pgx adapters for PostgreSQL
+date. Ordinary Date rejects NULL and infinity; InfinityDate models those
+sentinels explicitly when an application needs them.
+
+VARIABLES
+
+var (
+	// ErrNull identifies SQL NULL where an ordinary civil date is required.
+	ErrNull = errors.New("calendar/postgres: null date")
+	// ErrInfinity identifies PostgreSQL infinity where an ordinary date is required.
+	ErrInfinity = errors.New("calendar/postgres: infinity requires InfinityDate")
+)
+
+TYPES
+
+type Date struct {
+	// Has unexported fields.
+}
+    Date adapts a non-null, finite calendar.Date to database/sql and pgx.
+
+func NewDate(date calendar.Date) Date
+    NewDate constructs a PostgreSQL adapter. Invalid dates remain invalid and
+    return calendar.ErrInvalidDate when encoded.
+
+func (d Date) CalendarDate() calendar.Date
+    CalendarDate returns the wrapped civil date.
+
+func (d Date) DateValue() (pgtype.Date, error)
+    DateValue implements pgtype.DateValuer.
+
+func (d *Date) Scan(source any) error
+    Scan implements database/sql.Scanner.
+
+func (d *Date) ScanDate(value pgtype.Date) error
+    ScanDate implements pgtype.DateScanner.
+
+func (d Date) Value() (driver.Value, error)
+    Value implements database/sql/driver.Valuer using canonical date text.
+
+type InfinityDate struct {
+	// Has unexported fields.
+}
+    InfinityDate is the explicit sum type for finite and infinite PostgreSQL
+    dates. Its zero value is invalid because it has no finite Date.
+
+func NewFiniteDate(date calendar.Date) InfinityDate
+    NewFiniteDate constructs an infinity-aware finite value.
+
+func NewInfinityDate(kind InfinityKind) InfinityDate
+    NewInfinityDate constructs an infinite value. Finite is rejected at encode
+    time because callers must use NewFiniteDate with a concrete date.
+
+func (d InfinityDate) Date() calendar.Date
+    Date returns the finite date, or an invalid Date for infinities.
+
+func (d InfinityDate) DateValue() (pgtype.Date, error)
+    DateValue implements pgtype.DateValuer.
+
+func (d InfinityDate) Kind() InfinityKind
+    Kind returns the value classification.
+
+func (d *InfinityDate) Scan(source any) error
+    Scan implements database/sql.Scanner.
+
+func (d *InfinityDate) ScanDate(value pgtype.Date) error
+    ScanDate implements pgtype.DateScanner.
+
+func (d InfinityDate) Value() (driver.Value, error)
+    Value implements database/sql/driver.Valuer.
+
+type InfinityKind int8
+    InfinityKind classifies a finite or infinite PostgreSQL date.
+
+const (
+	// NegativeInfinity represents PostgreSQL -infinity.
+	NegativeInfinity InfinityKind = -1
+	// Finite represents an ordinary civil date.
+	Finite InfinityKind = 0
+	// PositiveInfinity represents PostgreSQL infinity.
+	PositiveInfinity InfinityKind = 1
+)
+package calendartemporal // import "github.com/faustbrian/go-calendar/adapters/temporal"
+
+Package calendartemporal converts civil boundaries into values suitable for
+temporal without adding interval algebra to calendar core.
+
+VARIABLES
+
+var (
+	// ErrReversed identifies civil endpoints in descending order.
+	ErrReversed = errors.New("calendar/temporal: reversed date range")
+	// ErrRangeLimit identifies a date sequence exceeding its explicit bound.
+	ErrRangeLimit = errors.New("calendar/temporal: sequence limit exceeded")
+)
+
+FUNCTIONS
+
+func Sequence(first, last calendar.Date, limit int) ([]calendar.Date, error)
+    Sequence returns every date in the inclusive range with explicit work bound.
+
+
+TYPES
+
+type InstantRange struct {
+	// Has unexported fields.
+}
+    InstantRange is a canonical start-inclusive, end-exclusive adapter value.
+
+func InclusiveDates(first, last calendar.Date, location *time.Location, policy calendartz.Resolution) (InstantRange, error)
+    InclusiveDates converts inclusive civil endpoints to an exclusive instant
+    range. Its boundaries can be passed directly to temporal/instant.Range.
+
+func (r InstantRange) End() time.Time
+    End returns the exclusive instant boundary.
+
+func (r InstantRange) Includes(value time.Time) bool
+    Includes reports membership using [start,end) semantics.
+
+func (r InstantRange) Start() time.Time
+    Start returns the inclusive instant boundary.
+
+package calendarvalidation // import "github.com/faustbrian/go-calendar/adapters/validation"
+
+Package calendarvalidation provides dependency-neutral rules that can be wrapped
+by validation ValidatorFunc without coupling calendar core to it.
+
+VARIABLES
+
+var (
+	// ErrInvalidDate identifies an invalid Date value.
+	ErrInvalidDate = errors.New("calendar/validation: invalid date")
+	// ErrDateOutOfRange identifies a Date outside inclusive configured bounds.
+	ErrDateOutOfRange = errors.New("calendar/validation: date out of range")
+)
+
+TYPES
+
+type Rule func(calendar.Date) error
+    Rule is a deterministic, side-effect-free date validation function.
+
+func DateRange(minimum, maximum calendar.Date) (Rule, error)
+    DateRange returns an inclusive bounded date rule.
+
+func ValidDate() Rule
+    ValidDate returns a rule that rejects the Date zero value.
+
+package calendarwire // import "github.com/faustbrian/go-calendar/adapters/wire"
+
+Package calendarwire provides bounded canonical wire helpers for Date.
+
+CONSTANTS
+
+const (
+	// Version identifies the stable canonical date wire contract.
+	Version = 1
+	// MaxBytes bounds an encoded canonical date including JSON syntax.
+	MaxBytes = 64
+)
+
+VARIABLES
+
+var ErrSizeLimit = errors.New("calendar/wire: size limit exceeded")
+    ErrSizeLimit identifies input exceeding MaxBytes.
+
+
+FUNCTIONS
+
+func DecodeDate(payload []byte) (calendar.Date, error)
+    DecodeDate decodes exactly one bounded canonical JSON date string.
+
+func EncodeDate(date calendar.Date) ([]byte, error)
+    EncodeDate encodes a Date as the version-1 canonical JSON string.
+
 package business // import "github.com/faustbrian/go-calendar/business"
 
 Package business provides immutable, versioned, and bounded business calendars
@@ -561,9 +785,13 @@ package calendarclock // import "github.com/faustbrian/go-calendar/calendarclock
 
 Package calendarclock adapts a narrow wall-clock source to civil dates.
 
+Deprecated: use github.com/faustbrian/go-calendar/adapters/clock. This package
+remains supported for the longer of 180 days after successor public availability
+and two subsequently published stable root-module minor releases.
+
 VARIABLES
 
-var ErrClockRequired = errors.New("calendar/clock: clock required")
+var ErrClockRequired = adapter.ErrClockRequired
     ErrClockRequired identifies a missing wall-clock capability.
 
 
@@ -583,6 +811,10 @@ type Clock interface {
 package calendarconfig // import "github.com/faustbrian/go-calendar/calendarconfig"
 
 Package calendarconfig provides strict config-compatible civil values.
+
+Deprecated: use github.com/faustbrian/go-calendar/adapters/config. This package
+remains supported for the longer of 180 days after successor public availability
+and two subsequently published stable root-module minor releases.
 
 TYPES
 
@@ -611,13 +843,17 @@ package calendartemporal // import "github.com/faustbrian/go-calendar/calendarte
 Package calendartemporal converts civil boundaries into values suitable for
 temporal without adding interval algebra to calendar core.
 
+Deprecated: use github.com/faustbrian/go-calendar/adapters/temporal. This
+package remains supported for the longer of 180 days after successor public
+availability and two subsequently published stable root-module minor releases.
+
 VARIABLES
 
 var (
 	// ErrReversed identifies civil endpoints in descending order.
-	ErrReversed = errors.New("calendar/temporal: reversed date range")
+	ErrReversed = adapter.ErrReversed
 	// ErrRangeLimit identifies a date sequence exceeding its explicit bound.
-	ErrRangeLimit = errors.New("calendar/temporal: sequence limit exceeded")
+	ErrRangeLimit = adapter.ErrRangeLimit
 )
 
 FUNCTIONS
@@ -690,13 +926,17 @@ package calendarvalidation // import "github.com/faustbrian/go-calendar/calendar
 Package calendarvalidation provides dependency-neutral rules that can be wrapped
 by validation ValidatorFunc without coupling calendar core to it.
 
+Deprecated: use github.com/faustbrian/go-calendar/adapters/validation.
+This package remains supported for the longer of 180 days after successor public
+availability and two subsequently published stable root-module minor releases.
+
 VARIABLES
 
 var (
 	// ErrInvalidDate identifies an invalid Date value.
-	ErrInvalidDate = errors.New("calendar/validation: invalid date")
+	ErrInvalidDate = adapter.ErrInvalidDate
 	// ErrDateOutOfRange identifies a Date outside inclusive configured bounds.
-	ErrDateOutOfRange = errors.New("calendar/validation: date out of range")
+	ErrDateOutOfRange = adapter.ErrDateOutOfRange
 )
 
 TYPES
@@ -714,18 +954,22 @@ package calendarwire // import "github.com/faustbrian/go-calendar/calendarwire"
 
 Package calendarwire provides bounded canonical wire helpers for Date.
 
+Deprecated: use github.com/faustbrian/go-calendar/adapters/wire. This package
+remains supported for the longer of 180 days after successor public availability
+and two subsequently published stable root-module minor releases.
+
 CONSTANTS
 
 const (
 	// Version identifies the stable canonical date wire contract.
-	Version = 1
+	Version = adapter.Version
 	// MaxBytes bounds an encoded canonical date including JSON syntax.
-	MaxBytes = 64
+	MaxBytes = adapter.MaxBytes
 )
 
 VARIABLES
 
-var ErrSizeLimit = errors.New("calendar/wire: size limit exceeded")
+var ErrSizeLimit = adapter.ErrSizeLimit
     ErrSizeLimit identifies input exceeding MaxBytes.
 
 
@@ -736,6 +980,8 @@ func DecodeDate(payload []byte) (calendar.Date, error)
 
 func EncodeDate(date calendar.Date) ([]byte, error)
     EncodeDate encodes a Date as the version-1 canonical JSON string.
+    The compatibility implementation remains local because another package-call
+    boundary changes its published allocation budget.
 
 package postgres // import "github.com/faustbrian/go-calendar/postgres"
 
@@ -743,13 +989,17 @@ Package postgres provides database/sql and pgx adapters for PostgreSQL date.
 Ordinary Date rejects NULL and infinity; InfinityDate models those sentinels
 explicitly when an application needs them.
 
+Deprecated: use github.com/faustbrian/go-calendar/adapters/postgres. This
+package remains supported for the longer of 180 days after successor public
+availability and two subsequently published stable root-module minor releases.
+
 VARIABLES
 
 var (
 	// ErrNull identifies SQL NULL where an ordinary civil date is required.
-	ErrNull = errors.New("calendar/postgres: null date")
+	ErrNull = calendarpostgres.ErrNull
 	// ErrInfinity identifies PostgreSQL infinity where an ordinary date is required.
-	ErrInfinity = errors.New("calendar/postgres: infinity requires InfinityDate")
+	ErrInfinity = calendarpostgres.ErrInfinity
 )
 
 TYPES

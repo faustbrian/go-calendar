@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-calendar",
+  "module": ".",
+  "package": "business",
+  "gate": "mutation",
+  "input_digest": "sha256:67fa28760cedc9eb945fdc7ec59374d72f8b2a011b605304326e9eaab45d1607",
+  "verifier_digest": "sha256:9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+  "result": "passed",
+  "report_digest": "sha256:cc9e8dbf8c3de7022ef042485049ddc8a00abd9544dd3308d41f4db12238c363",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.26.6",
+    "evidence_origin": "approved_legacy_checkpoint"
+  },
+  "completed_at": "2026-09-09T02:36:41.416729Z"
+}
