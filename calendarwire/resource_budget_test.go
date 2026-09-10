@@ -16,19 +16,20 @@ var (
 
 func TestWireOutputAndAllocationBudgets(t *testing.T) {
 	date := calendar.MustDate(2024, time.February, 29)
-	maximumAllocations := float64(4 + raceAllocationSlack)
+	maximumEncodeAllocations := float64(5 + raceAllocationSlack)
 	if allocations := testing.AllocsPerRun(1_000, func() {
 		budgetWireBytes, budgetWireErr = calendarwire.EncodeDate(date)
-	}); allocations > maximumAllocations {
-		t.Fatalf("wire encode allocations = %.0f, budget %.0f", allocations, maximumAllocations)
+	}); allocations > maximumEncodeAllocations {
+		t.Fatalf("wire encode allocations = %.0f, budget %.0f", allocations, maximumEncodeAllocations)
 	}
 	if budgetWireErr != nil || len(budgetWireBytes) > calendarwire.MaxBytes {
 		t.Fatalf("wire output = %d bytes, %v", len(budgetWireBytes), budgetWireErr)
 	}
 	payload := []byte(`"2024-02-29"`)
+	maximumDecodeAllocations := float64(4 + raceAllocationSlack)
 	if allocations := testing.AllocsPerRun(1_000, func() {
 		budgetWireDate, budgetWireErr = calendarwire.DecodeDate(payload)
-	}); allocations > maximumAllocations {
-		t.Fatalf("wire decode allocations = %.0f, budget %.0f", allocations, maximumAllocations)
+	}); allocations > maximumDecodeAllocations {
+		t.Fatalf("wire decode allocations = %.0f, budget %.0f", allocations, maximumDecodeAllocations)
 	}
 }

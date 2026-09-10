@@ -5,6 +5,11 @@ versioning.
 
 ## Unreleased
 
+### Changed
+
+- Require Go 1.27.0 and record its stable five-allocation wire encode budget;
+  the four-allocation decode budget remains unchanged.
+
 ## 1.1.0 - 2026-09-09
 
 ### Changed
