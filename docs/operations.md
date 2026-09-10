@@ -1,6 +1,6 @@
 # Operations
 
-Pin Go 1.26.6 and the `golib` release declared by `.golib.yaml`. Run
+Pin Go 1.27.0 and the `golib` release declared by `.golib.yaml`. Run
 `golib check --all` before release and after OS, container, Go, or tzdata
 updates. Review transition
 corpus drift rather than weakening assertions.
