@@ -7,12 +7,12 @@
 [![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-calendar.svg)](https://pkg.go.dev/github.com/faustbrian/go-calendar)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-calendar?sort=semver)](https://github.com/faustbrian/go-calendar/releases)
-[![Go](https://img.shields.io/badge/go-1.26.6-00ADD8?logo=go)](https://go.dev/)
+[![Go](https://img.shields.io/badge/go-1.27.0-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 `calendar` provides immutable civil dates, Gregorian calendar arithmetic,
 typed calendar periods, explicit DST conversion, and bounded business
-calendars for Go 1.26.6 and later.
+calendars for Go 1.27.0 and later.
 
 A `calendar.Date` is a day on a calendar. It is not a `time.Time`, has no
 timezone, and cannot accidentally be used as an elapsed duration.

@@ -14,12 +14,13 @@ local measurements were approximately:
 These figures are evidence, not portable service-level guarantees. Compare on
 the same hardware/toolchain and investigate material regressions. Calendar
 lookup is map-based; business navigation remains intentionally bounded linear
-work in examined civil days.
+work in examined civil days. Go 1.27.0 repeatedly measures five allocations
+for wire encoding on the same focused 1,000-operation workload.
 
 Allocation ceilings are blocking because they are deterministic under the
 pinned Go toolchain: date parse/month/ISO and business lookup/navigation permit
 zero allocations, timezone fold resolution permits four, wire encode/decode
-permit four/four, and native pgx binary encoding permits two. The package-local
+permit five/four, and native pgx binary encoding permits two. The package-local
 `Test*AllocationBudget*` tests enforce these limits during `make test` and race
 testing. The race build permits two instrumentation-only allocations in the wire
 codec. Wall-clock benchmark values remain evidence rather than noisy CI
