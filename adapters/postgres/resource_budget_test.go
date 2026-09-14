@@ -1,6 +1,7 @@
 package calendarpostgres_test
 
 import (
+	"errors"
 	"testing"
 	"time"
 
@@ -23,5 +24,27 @@ func TestPGXBinaryEncodingAllocationBudget(t *testing.T) {
 		)
 	}); allocations > 2 {
 		t.Fatalf("pgx binary encode allocations = %.0f, budget 2", allocations)
+	}
+}
+
+func TestOversizedSQLByteInputAllocationBudget(t *testing.T) {
+	payload := make([]byte, 1<<20)
+	for name, scanner := range map[string]interface{ Scan(any) error }{
+		"date":     &calendarpg.Date{},
+		"infinity": &calendarpg.InfinityDate{},
+	} {
+		t.Run(name, func(t *testing.T) {
+			result := testing.Benchmark(func(b *testing.B) {
+				for range b.N {
+					budgetPGXErr = scanner.Scan(payload)
+				}
+			})
+			if bytes := result.AllocedBytesPerOp(); bytes > 1<<10 {
+				t.Fatalf("oversized SQL byte scan allocated %d bytes, budget %d", bytes, 1<<10)
+			}
+			if !errors.Is(budgetPGXErr, calendar.ErrInvalidFormat) {
+				t.Fatalf("oversized SQL byte scan error = %v", budgetPGXErr)
+			}
+		})
 	}
 }

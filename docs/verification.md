@@ -65,7 +65,7 @@ See the [Gregorian/ISO vectors](gregorian-iso-vectors.md) and
 | ISO/custom parsers, invalid UTF-8, impossible values, trailing data, and huge years | `FuzzParseDate`, `FuzzTypedCalendarParsers`, strict parser tests, and the ten-byte parser limit |
 | Timezone names and holiday metadata | Timezone and business fuzz targets plus named byte/count limits |
 | JSON, text, config, validation, and canonical wire forms | Date encoding tests and the calendarconfig, calendarvalidation, and calendarwire package suites |
-| SQL, pgx, finite date, NULL, and explicit infinity policy | PostgreSQL unit/fuzz tests and `TestPostgreSQLDateRoundTrip` against a live server |
+| SQL, pgx, finite date, NULL, explicit infinity policy, and bounded rejected byte-input allocation | PostgreSQL unit/fuzz tests, `TestOversizedSQLByteInputAllocationBudget`, and `TestPostgreSQLDateRoundTrip` against a live server |
 | Parser, year, holiday, search, output, and allocation budgets | Constants and caller limits plus all package-local `Test*AllocationBudget*` tests |
 | Shared calendars, locations, codecs, and generated corpus metadata | Concurrent tests in business, timezone, calendarwire, postgres, and calendartest under `go test -race ./...` |
 | Performance evidence | Parse, arithmetic, ISO, business, timezone, and pgx benchmarks documented in [performance](performance.md) |
