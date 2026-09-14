@@ -216,6 +216,12 @@ func sourceText(source any) (string, bool) {
 	case string:
 		return value, true
 	case []byte:
+		// A canonical date is the longest accepted token. Return an empty text
+		// value for larger driver buffers so callers receive the same format
+		// rejection without first copying attacker-influenced input.
+		if len(value) > calendar.MaxParseBytes {
+			return "", true
+		}
 		return string(value), true
 	default:
 		return "", false

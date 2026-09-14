@@ -5,6 +5,12 @@ versioning.
 
 ## Unreleased
 
+### Fixed
+
+- Reject oversized PostgreSQL `[]byte` date values before string conversion,
+  bounding allocation for invalid driver input without changing accepted date
+  and infinity values or their error identities.
+
 ### Changed
 
 - Require Go 1.27.0 and record its stable five-allocation wire encode budget;
