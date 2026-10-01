@@ -16,7 +16,7 @@ calendars for Go 1.27.0 and later.
 
 Main contains v2.0.0 under `github.com/faustbrian/go-calendar/v2`. Public tags
 and GitHub releases establish publication status; source documentation alone
-does not. V1.1.0 remains available under the unsuffixed module path.
+does not. V1.1.0 remains available under the original module path.
 See the [v2 migration guide](docs/v2-migration.md) before changing
 an existing application or public adapter.
 
