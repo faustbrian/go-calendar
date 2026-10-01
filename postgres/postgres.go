@@ -2,7 +2,7 @@
 // Ordinary Date rejects NULL and infinity; InfinityDate models those sentinels
 // explicitly when an application needs them.
 //
-// Deprecated: use github.com/faustbrian/go-calendar/adapters/postgres. This
+// Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/postgres. This
 // package remains supported for the longer of 180 days after successor public
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -11,8 +11,8 @@ package postgres
 import (
 	"database/sql/driver"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendarpostgres "github.com/faustbrian/go-calendar/adapters/postgres"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendarpostgres "github.com/faustbrian/go-calendar/v2/adapters/postgres"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 

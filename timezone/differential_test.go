@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	calendartz "github.com/faustbrian/go-calendar/timezone"
+	calendartz "github.com/faustbrian/go-calendar/v2/timezone"
 )
 
 func TestTimezoneConversionsDifferentialAgainstStandardLibrary(t *testing.T) {

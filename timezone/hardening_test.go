@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
 type unknownResolution struct{}

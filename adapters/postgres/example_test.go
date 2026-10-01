@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendarpg "github.com/faustbrian/go-calendar/adapters/postgres"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendarpg "github.com/faustbrian/go-calendar/v2/adapters/postgres"
 )
 
 func ExampleDate() {

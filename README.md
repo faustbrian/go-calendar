@@ -14,6 +14,12 @@
 typed calendar periods, explicit DST conversion, and bounded business
 calendars for Go 1.27.0 and later.
 
+Main contains v2.0.0 under `github.com/faustbrian/go-calendar/v2`. Public tags
+and GitHub releases establish publication status; source documentation alone
+does not. V1.1.0 remains available under the unsuffixed module path.
+See the [v2 migration guide](docs/v2-migration.md) before changing
+an existing application or public adapter.
+
 A `calendar.Date` is a day on a calendar. It is not a `time.Time`, has no
 timezone, and cannot accidentally be used as an elapsed duration.
 

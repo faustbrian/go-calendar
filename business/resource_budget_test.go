@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	"github.com/faustbrian/go-calendar/business"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	"github.com/faustbrian/go-calendar/v2/business"
 )
 
 var (

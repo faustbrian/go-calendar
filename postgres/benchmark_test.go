@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendarpg "github.com/faustbrian/go-calendar/postgres"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendarpg "github.com/faustbrian/go-calendar/v2/postgres"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 

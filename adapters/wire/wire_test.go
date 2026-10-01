@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendarwire "github.com/faustbrian/go-calendar/adapters/wire"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendarwire "github.com/faustbrian/go-calendar/v2/adapters/wire"
 )
 
 func TestCanonicalDateWireRoundTrip(t *testing.T) {

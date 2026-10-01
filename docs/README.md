@@ -17,6 +17,7 @@ to compare related independently adoptable libraries.
 - [PostgreSQL](postgres.md)
 - [Adapters](adapters.md)
 - [Adapter migration](migration.md)
+- [V2 migration](v2-migration.md)
 - [Clock and temporal composition](composition.md)
 - [Holiday datasets](holiday-datasets.md)
 - [Versioning](versioning.md)

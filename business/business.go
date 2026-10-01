@@ -10,12 +10,15 @@ import (
 	"time"
 	"unicode/utf8"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
 const (
 	// MaxHolidays bounds holidays accepted by one calendar.
 	MaxHolidays = 10_000
+	// MaxWeekends bounds supplied weekend entries before calendar allocation.
+	// Duplicate weekdays remain valid within this bound.
+	MaxWeekends = 7
 	// MaxHolidayNameBytes bounds a holiday name.
 	MaxHolidayNameBytes = 256
 	// MaxMetadataEntries bounds metadata attached to one holiday.
@@ -101,7 +104,8 @@ type Provenance struct {
 
 // Config constructs an immutable Calendar.
 type Config struct {
-	Revision   string
+	Revision string
+	// Weekends contains at most MaxWeekends entries; duplicates are permitted.
 	Weekends   []time.Weekday
 	Holidays   []Holiday
 	Provenance Provenance
@@ -118,7 +122,7 @@ type Calendar struct {
 
 // NewCalendar validates and deeply copies config.
 func NewCalendar(config Config) (Calendar, error) {
-	if !allTrue(config.Revision != "", cmp.Compare(len(config.Revision), maxRevisionBytes) != 1, utf8.ValidString(config.Revision)) {
+	if config.Revision == "" || len(config.Revision) > maxRevisionBytes || !utf8.ValidString(config.Revision) {
 		return Calendar{}, ErrInvalidCalendar
 	}
 	if cmp.Compare(len(config.Holidays), MaxHolidays) == 1 {
@@ -131,6 +135,9 @@ func NewCalendar(config Config) (Calendar, error) {
 		if !utf8.ValidString(field) {
 			return Calendar{}, ErrInvalidCalendar
 		}
+	}
+	if len(config.Weekends) > MaxWeekends {
+		return Calendar{}, ErrResourceLimit
 	}
 	result := Calendar{
 		revision:   config.Revision,
@@ -371,13 +378,7 @@ func cloneMetadata(metadata map[string]string) (map[string]string, error) {
 	}
 	result := make(map[string]string, len(metadata))
 	for key, value := range metadata {
-		if !allTrue(
-			key != "",
-			cmp.Compare(len(key), maxMetadataKey) != 1,
-			cmp.Compare(len(value), maxMetadataValue) != 1,
-			utf8.ValidString(key),
-			utf8.ValidString(value),
-		) {
+		if key == "" || len(key) > maxMetadataKey || len(value) > maxMetadataValue || !utf8.ValidString(key) || !utf8.ValidString(value) {
 			return nil, ErrInvalidHoliday
 		}
 		result[key] = value

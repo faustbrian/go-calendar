@@ -1,6 +1,6 @@
 # PostgreSQL
 
-Import `github.com/faustbrian/go-calendar/adapters/postgres` and use
+Import `github.com/faustbrian/go-calendar/v2/adapters/postgres` and use
 `calendarpostgres.NewDate` for a finite non-null PostgreSQL `date`. The adapter
 implements `database/sql.Scanner`, `driver.Valuer`, `pgtype.DateScanner`, and
 `pgtype.DateValuer`. SQL `NULL` and infinity are errors.
@@ -13,5 +13,5 @@ dates. Native pgx text/binary codecs and a live PostgreSQL round trip are tested
 tagged integration suite. CI runs the same contract against the pinned service
 identity.
 
-The former `github.com/faustbrian/go-calendar/postgres` import remains a
+The former `github.com/faustbrian/go-calendar/v2/postgres` import remains a
 deprecated compatibility path. See [adapter migration](migration.md).

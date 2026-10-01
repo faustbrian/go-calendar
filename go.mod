@@ -1,4 +1,4 @@
-module github.com/faustbrian/go-calendar
+module github.com/faustbrian/go-calendar/v2
 
 go 1.27.0
 

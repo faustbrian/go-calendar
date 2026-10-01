@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendartemporal "github.com/faustbrian/go-calendar/adapters/temporal"
-	calendartz "github.com/faustbrian/go-calendar/timezone"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendartemporal "github.com/faustbrian/go-calendar/v2/adapters/temporal"
+	calendartz "github.com/faustbrian/go-calendar/v2/timezone"
 )
 
 func TestInclusiveDatesBecomeExclusiveInstantPeriod(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendarvalidation "github.com/faustbrian/go-calendar/adapters/validation"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendarvalidation "github.com/faustbrian/go-calendar/v2/adapters/validation"
 )
 
 func TestDateValidatorsComposeWithGoValidation(t *testing.T) {

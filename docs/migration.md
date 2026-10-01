@@ -4,6 +4,12 @@ The target-oriented adapter paths are additive. Existing programs may migrate
 one import at a time without changing constructors, methods, constants,
 sentinel checks, serialization, ownership, or concurrency behavior.
 
+That additive migration applies within a module major. Main now prepares the
+intentional `/v2` root identity: v1 and v2 values are distinct, and the generic
+JSON envelope and default diagnostic policies change. Use the
+[v2 migration guide](v2-migration.md) for that coordinated upgrade; do not
+interpret one-at-a-time adapter migration as cross-major type compatibility.
+
 | Replace | With |
 | --- | --- |
 | `go-calendar/calendarclock` | `go-calendar/adapters/clock` |

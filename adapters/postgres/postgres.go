@@ -6,10 +6,9 @@ package calendarpostgres
 import (
 	"database/sql/driver"
 	"errors"
-	"fmt"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -208,7 +207,7 @@ func scanFinite(source any) (calendar.Date, error) {
 	if value, ok := source.(time.Time); ok {
 		return calendar.NewDate(value.Date())
 	}
-	return calendar.Date{}, fmt.Errorf("calendar/postgres: cannot scan %T", source)
+	return calendar.Date{}, errors.New("calendar/postgres: unsupported date value")
 }
 
 func sourceText(source any) (string, bool) {

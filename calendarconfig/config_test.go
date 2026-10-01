@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	calendar "github.com/faustbrian/go-calendar"
-	"github.com/faustbrian/go-calendar/calendarconfig"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	"github.com/faustbrian/go-calendar/v2/calendarconfig"
 )
 
 func TestDateDecodesStrictConfigValues(t *testing.T) {

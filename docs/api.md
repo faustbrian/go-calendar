@@ -40,9 +40,10 @@
 - `adapters/temporal` creates bounded sequences and exclusive instant endpoints.
 - `adapters/config.Date`, `adapters/validation.Rule`, and `adapters/wire`
   provide strict adapter seams.
-- The original top-level adapter imports remain deprecated compatibility paths
-  with their released public type and sentinel identities.
+- The original top-level adapter imports remain supported deprecated paths
+  within v2. Their v1 identities are not interchangeable with v2 values.
 - `calendartest` provides clocks, assertions, locations, and transition vectors.
 
 The generated, compiler-derived public API snapshot is
-[api/baseline.txt](../api/baseline.txt).
+[api/calendar-v2.txt](../api/calendar-v2.txt). The unchanged
+[v1 baseline](../api/baseline.txt) is historical, not the active candidate API.

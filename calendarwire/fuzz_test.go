@@ -3,7 +3,7 @@ package calendarwire_test
 import (
 	"testing"
 
-	"github.com/faustbrian/go-calendar/calendarwire"
+	"github.com/faustbrian/go-calendar/v2/calendarwire"
 )
 
 func FuzzDecodeDate(f *testing.F) {

@@ -1,7 +1,7 @@
 // Package calendartemporal converts civil boundaries into values suitable for
 // temporal without adding interval algebra to calendar core.
 //
-// Deprecated: use github.com/faustbrian/go-calendar/adapters/temporal. This
+// Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/temporal. This
 // package remains supported for the longer of 180 days after successor public
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -10,9 +10,9 @@ package calendartemporal
 import (
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	adapter "github.com/faustbrian/go-calendar/adapters/temporal"
-	calendartz "github.com/faustbrian/go-calendar/timezone"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	adapter "github.com/faustbrian/go-calendar/v2/adapters/temporal"
+	calendartz "github.com/faustbrian/go-calendar/v2/timezone"
 )
 
 var (

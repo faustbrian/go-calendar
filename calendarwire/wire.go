@@ -1,6 +1,6 @@
 // Package calendarwire provides bounded canonical wire helpers for Date.
 //
-// Deprecated: use github.com/faustbrian/go-calendar/adapters/wire. This package
+// Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/wire. This package
 // remains supported for the longer of 180 days after successor public
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -10,8 +10,8 @@ import (
 	"cmp"
 	"slices"
 
-	calendar "github.com/faustbrian/go-calendar"
-	adapter "github.com/faustbrian/go-calendar/adapters/wire"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	adapter "github.com/faustbrian/go-calendar/v2/adapters/wire"
 )
 
 const (

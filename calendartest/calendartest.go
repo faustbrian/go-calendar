@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendartz "github.com/faustbrian/go-calendar/timezone"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendartz "github.com/faustbrian/go-calendar/v2/timezone"
 )
 
 // FixedClock implements the narrow clock capability used by calendarclock.
