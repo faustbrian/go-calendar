@@ -4,7 +4,7 @@ The minimum toolchain is Go 1.27.0, the latest stable release at implementation
 time. The module supports standard-library IANA behavior on Linux, macOS, and
 Windows. Timezone results follow the installed or embedded tzdata snapshot.
 
-PostgreSQL integration targets maintained versions 14 through 18. pgx v5.10.0
+PostgreSQL integration targets maintained versions 14 through 18. pgx v5.11.0
 is pinned. Public API drift is checked against `api/calendar-v2.txt`; deliberate
 breaking changes require a major version after v1.
 
