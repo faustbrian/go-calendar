@@ -25,14 +25,114 @@ jobs:
       tooling_sha: be0fd7d09b02c9dff29e6b00a5245ceac3cdfdfb
       release_dry_run: ${{ inputs.release_dry_run || false }}
 
+  release-os:
+    name: Release timezone / ${{ matrix.os }}
+    if: github.event_name == 'workflow_dispatch' && inputs.release_dry_run
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.27.0'
+          cache: false
+      - name: Exercise ordinary timezone and date-range contracts
+        shell: bash
+        env:
+          GOMAXPROCS: '2'
+          GOFLAGS: -p=1
+          GOTOOLCHAIN: local
+          GOWORK: 'off'
+        run: |
+          set -euo pipefail
+          task_dir=$(mktemp -d)
+          trap 'chmod -R u+w "$task_dir"; rm -r "$task_dir"' EXIT
+          mkdir -p "$task_dir/build" "$task_dir/mod" "$task_dir/tmp"
+          task_root=$(cd "$task_dir" && pwd -P)
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            task_root=$(cygpath -m "$task_root")
+          fi
+          export GOCACHE="$task_root/build" GOMODCACHE="$task_root/mod" GOTMPDIR="$task_root/tmp"
+          go test -count=1 -timeout=5m -run 'DST|Fold|Gap|Timezone|Transition|Location|DayRange' ./...
+
+  release-postgres:
+    name: Release PostgreSQL / ${{ matrix.version }}
+    if: github.event_name == 'workflow_dispatch' && inputs.release_dry_run
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: '14'
+            image: postgres:14@sha256:c2427de38f998489d36de7ca3553db2134872c400f2b08be4b824e5c50e4d619
+          - version: '15'
+            image: postgres:15@sha256:724292da1f2e50bdccfc3302ce75bbba7f4a6076701b588cc795fcac65683550
+          - version: '16'
+            image: postgres:16@sha256:1a6ab3f5345eb6dbe04a1349529caabdb0ab09293a09590fad07b2246bfa4b54
+          - version: '17'
+            image: postgres:17@sha256:d74eeac9a635390a49bc21bd49fccd973de707e2a53a76ac49b552b8712ec46f
+          - version: '18'
+            image: postgres:18@sha256:5a5a84b19854a9ffaa54082c166ff4ec27473a361e496e5ea167f298f2da9722
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: ${{ matrix.image }}
+        env:
+          POSTGRES_DB: calendar
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: calendar-test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d calendar"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.27.0'
+          cache: false
+      - name: Exercise canonical and retained PostgreSQL round trips
+        shell: bash
+        env:
+          POSTGRES_URL: postgres://postgres:calendar-test@localhost:5432/calendar?sslmode=disable
+          GOMAXPROCS: '2'
+          GOFLAGS: -p=1
+          GOTOOLCHAIN: local
+          GOWORK: 'off'
+        run: |
+          set -euo pipefail
+          task_dir=$(mktemp -d)
+          trap 'chmod -R u+w "$task_dir"; rm -r "$task_dir"' EXIT
+          mkdir -p "$task_dir/build" "$task_dir/mod" "$task_dir/tmp"
+          export GOCACHE="$task_dir/build" GOMODCACHE="$task_dir/mod" GOTMPDIR="$task_dir/tmp"
+          go test -count=1 -timeout=5m -tags=integration -run '^TestPostgreSQLDateRoundTrip$' ./adapters/postgres ./postgres
+
   required:
     name: Required
     if: always()
-    needs: ci
+    needs: [ci, release-os, release-postgres]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Require shared workflow
         env:
           CI_RESULT: ${{ needs.ci.result }}
-        run: test "${CI_RESULT}" = success
+          RELEASE_SELECTED: ${{ github.event_name == 'workflow_dispatch' && inputs.release_dry_run }}
+          OS_RESULT: ${{ needs.release-os.result }}
+          POSTGRES_RESULT: ${{ needs.release-postgres.result }}
+        run: |
+          test "${CI_RESULT}" = success
+          if [ "$RELEASE_SELECTED" = true ]; then
+            test "$OS_RESULT" = success
+            test "$POSTGRES_RESULT" = success
+          else
+            test "$OS_RESULT" = skipped
+            test "$POSTGRES_RESULT" = skipped
+          fi
