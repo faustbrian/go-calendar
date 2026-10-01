@@ -1,15 +1,15 @@
 // Package calendarvalidation provides dependency-neutral rules that can be
 // wrapped by validation ValidatorFunc without coupling calendar core to it.
 //
-// Deprecated: use github.com/faustbrian/go-calendar/adapters/validation. This
+// Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/validation. This
 // package remains supported for the longer of 180 days after successor public
 // availability and two subsequently published stable root-module minor
 // releases.
 package calendarvalidation
 
 import (
-	calendar "github.com/faustbrian/go-calendar"
-	adapter "github.com/faustbrian/go-calendar/adapters/validation"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	adapter "github.com/faustbrian/go-calendar/v2/adapters/validation"
 )
 
 var (

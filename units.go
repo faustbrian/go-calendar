@@ -13,7 +13,7 @@ type Year struct{ value uint16 }
 // NewYear validates and constructs a Year.
 func NewYear(year int) (Year, error) {
 	if year < MinYear || year > MaxYear {
-		return Year{}, fmt.Errorf("%w: year %d", ErrInvalidDate, year)
+		return Year{}, ErrInvalidDate
 	}
 	return Year{value: uint16(year)}, nil
 }
@@ -203,7 +203,7 @@ type Quarter struct {
 // NewQuarter validates and constructs a Quarter numbered 1 through 4.
 func NewQuarter(year, quarter int) (Quarter, error) {
 	if _, err := NewYear(year); err != nil || quarter < 1 || quarter > 4 {
-		return Quarter{}, fmt.Errorf("%w: quarter %04d-Q%d", ErrInvalidDate, year, quarter)
+		return Quarter{}, ErrInvalidDate
 	}
 	// #nosec G115 -- year and quarter were validated above.
 	return Quarter{year: uint16(year), quarter: uint8(quarter)}, nil
@@ -289,7 +289,7 @@ type Semester struct {
 // NewSemester validates and constructs a Semester numbered 1 or 2.
 func NewSemester(year, semester int) (Semester, error) {
 	if _, err := NewYear(year); err != nil || semester < 1 || semester > 2 {
-		return Semester{}, fmt.Errorf("%w: semester %04d-H%d", ErrInvalidDate, year, semester)
+		return Semester{}, ErrInvalidDate
 	}
 	// #nosec G115 -- year and semester were validated above.
 	return Semester{year: uint16(year), semester: uint8(semester)}, nil
@@ -376,7 +376,7 @@ type ISOWeek struct {
 // NewISOWeek validates and constructs an ISO week.
 func NewISOWeek(year, week int) (ISOWeek, error) {
 	if year < MinYear || year > MaxYear || week < 1 || week > isoWeeksInYear(year) {
-		return ISOWeek{}, fmt.Errorf("%w: ISO week %04d-W%02d", ErrInvalidDate, year, week)
+		return ISOWeek{}, ErrInvalidDate
 	}
 	// #nosec G115 -- year and week were validated above.
 	return ISOWeek{year: uint16(year), week: uint8(week)}, nil

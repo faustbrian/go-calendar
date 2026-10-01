@@ -2,9 +2,9 @@
 package calendarconfig
 
 import (
-	"fmt"
+	"errors"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
 // Date is a config ValueUnmarshaler for a required canonical civil date.
@@ -23,7 +23,7 @@ func (d *Date) UnmarshalConfigValue(value any) error {
 	}
 	text, ok := value.(string)
 	if !ok {
-		return fmt.Errorf("calendar/config: expected date string, received %T", value)
+		return errors.New("calendar/config: expected date string")
 	}
 	parsed, err := calendar.ParseDate(text)
 	if err != nil {
@@ -41,8 +41,8 @@ func (d *Date) UnmarshalText(text []byte) error {
 	if d == nil {
 		return calendar.ErrInvalidDate
 	}
-	parsed, err := calendar.ParseDate(string(text))
-	if err != nil {
+	var parsed calendar.Date
+	if err := parsed.UnmarshalText(text); err != nil {
 		return err
 	}
 	d.date = parsed

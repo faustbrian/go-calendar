@@ -3,7 +3,7 @@ package postgres_test
 import (
 	"testing"
 
-	calendarpg "github.com/faustbrian/go-calendar/postgres"
+	calendarpg "github.com/faustbrian/go-calendar/v2/postgres"
 )
 
 func FuzzDateScan(f *testing.F) {

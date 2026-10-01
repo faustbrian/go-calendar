@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
-	calendarclock "github.com/faustbrian/go-calendar/adapters/clock"
-	"github.com/faustbrian/go-calendar/calendartest"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	calendarclock "github.com/faustbrian/go-calendar/v2/adapters/clock"
+	"github.com/faustbrian/go-calendar/v2/calendartest"
 )
 
 func TestFixturesAndTransitionCorpus(t *testing.T) {

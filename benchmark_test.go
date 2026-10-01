@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
 func BenchmarkParseDate(b *testing.B) {

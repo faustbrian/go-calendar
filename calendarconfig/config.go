@@ -1,14 +1,14 @@
 // Package calendarconfig provides strict config-compatible civil values.
 //
-// Deprecated: use github.com/faustbrian/go-calendar/adapters/config. This
+// Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/config. This
 // package remains supported for the longer of 180 days after successor public
 // availability and two subsequently published stable root-module minor
 // releases.
 package calendarconfig
 
 import (
-	calendar "github.com/faustbrian/go-calendar"
-	adapter "github.com/faustbrian/go-calendar/adapters/config"
+	calendar "github.com/faustbrian/go-calendar/v2"
+	adapter "github.com/faustbrian/go-calendar/v2/adapters/config"
 )
 
 // Date is a config ValueUnmarshaler for a required canonical civil date.

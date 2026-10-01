@@ -36,8 +36,8 @@ Use target-oriented imports for optional integration:
 
 ```go
 import (
-    calendarpostgres "github.com/faustbrian/go-calendar/adapters/postgres"
-    calendarwire "github.com/faustbrian/go-calendar/adapters/wire"
+    calendarpostgres "github.com/faustbrian/go-calendar/v2/adapters/postgres"
+    calendarwire "github.com/faustbrian/go-calendar/v2/adapters/wire"
 )
 
 payload, err := calendarwire.EncodeDate(date)

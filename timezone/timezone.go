@@ -12,7 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
 var (
@@ -60,13 +60,7 @@ func MatchOffset(offsetSeconds int) Resolution { return offsetMatch{seconds: off
 // LoadLocation validates a bounded IANA name before delegating transition
 // calculation to the standard library's authoritative timezone loader.
 func LoadLocation(name string) (*time.Location, error) {
-	if !allTrue(
-		name != "",
-		cmp.Compare(len(name), MaxZoneNameBytes) != 1,
-		utf8.ValidString(name),
-		!strings.HasPrefix(name, "/"),
-		!strings.Contains(name, "\\"),
-	) {
+	if name == "" || len(name) > MaxZoneNameBytes || !utf8.ValidString(name) || strings.HasPrefix(name, "/") || strings.Contains(name, "\\") {
 		return nil, ErrInvalidZone
 	}
 	for _, segment := range strings.Split(name, "/") {

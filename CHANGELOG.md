@@ -5,6 +5,28 @@ versioning.
 
 ## Unreleased
 
+## 2.0.0 - Prepared, not published
+
+### Changed
+
+- Use the `github.com/faustbrian/go-calendar/v2` module and import paths on
+  main with Go 1.27.0. All canonical adapters and supported compatibility
+  packages remain in the same root module; update imports together because
+  v1 and v2 civil-date types are distinct.
+- Bound generic date JSON at 64 bytes before decoding while retaining
+  legitimate whitespace and escaped date strings within that envelope.
+  Reject invalid text lengths before conversion and leave receivers unchanged
+  on rejection.
+- Omit caller-controlled date and period components and decoder-rejected
+  characters from default error strings. Error classification remains
+  available through `errors.Is` and `errors.As`; explicit decoder-cause
+  inspection may reveal input-derived diagnostics.
+- Omit unsupported caller type descriptions from configuration and PostgreSQL
+  errors without changing rejection, NULL, infinity, or receiver ownership.
+- Bound supplied weekend entries at seven before calendar allocation;
+  duplicates remain valid within the bound. Reject oversized strings before
+  UTF-8 or timezone-name scans, preserving existing classifications.
+
 ### Fixed
 
 - Reject oversized PostgreSQL `[]byte` date values before string conversion,

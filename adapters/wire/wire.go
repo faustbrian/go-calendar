@@ -6,7 +6,7 @@ import (
 	"errors"
 	"slices"
 
-	calendar "github.com/faustbrian/go-calendar"
+	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
 const (

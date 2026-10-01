@@ -18,6 +18,9 @@ const (
 	MaxYear = 9999
 	// MaxParseBytes bounds all canonical date input.
 	MaxParseBytes = 10
+	// MaxJSONBytes bounds a generic JSON date representation, including
+	// whitespace and escapes, before decoding.
+	MaxJSONBytes = 64
 )
 
 var (
@@ -62,7 +65,7 @@ type ComponentDifference struct {
 // NewDate validates and constructs a Date.
 func NewDate(year int, month time.Month, day int) (Date, error) {
 	if year < MinYear || year > MaxYear || month < time.January || month > time.December || day < 1 || day > daysInMonth(year, month) {
-		return Date{}, fmt.Errorf("%w: %04d-%02d-%02d", ErrInvalidDate, year, month, day)
+		return Date{}, ErrInvalidDate
 	}
 	// #nosec G115 -- all values were validated against their target widths above.
 	return Date{year: uint16(year), month: uint8(month), day: uint8(day)}, nil
@@ -227,7 +230,7 @@ func (d Date) AddMonths(months int, policy ArithmeticPolicy) (Date, error) {
 		return NewDate(year, month, last)
 	}
 	if policy == Reject {
-		return Date{}, fmt.Errorf("%w: day %d absent from %04d-%02d", ErrArithmetic, d.Day(), year, month)
+		return Date{}, ErrArithmetic
 	}
 	t := time.Date(year, month, d.Day(), 0, 0, 0, 0, time.UTC)
 	return NewDate(t.Date())
@@ -408,6 +411,9 @@ func (d *Date) UnmarshalText(text []byte) error {
 	if d == nil {
 		return ErrInvalidDate
 	}
+	if len(text) != MaxParseBytes {
+		return ErrInvalidFormat
+	}
 	parsed, err := ParseDate(string(text))
 	if err != nil {
 		return err
@@ -424,17 +430,28 @@ func (d Date) MarshalJSON() ([]byte, error) {
 	return json.Marshal(d.String())
 }
 
-// UnmarshalJSON decodes a canonical JSON date string.
+// UnmarshalJSON decodes a JSON string containing a canonical date. Whitespace
+// and escapes remain valid within MaxJSONBytes. Rejection leaves d unchanged;
+// default diagnostics omit input, while errors.As permits explicit inspection
+// of a decoder cause that may contain caller data.
 func (d *Date) UnmarshalJSON(data []byte) error {
 	if d == nil {
 		return ErrInvalidDate
 	}
+	if len(data) > MaxJSONBytes {
+		return ErrInvalidFormat
+	}
 	var text string
 	if err := json.Unmarshal(data, &text); err != nil {
-		return fmt.Errorf("%w: JSON string: %w", ErrInvalidFormat, err)
+		return dateJSONError{cause: err}
 	}
 	return d.UnmarshalText([]byte(text))
 }
+
+type dateJSONError struct{ cause error }
+
+func (dateJSONError) Error() string       { return "calendar: invalid format: JSON string" }
+func (err dateJSONError) Unwrap() []error { return []error{ErrInvalidFormat, err.cause} }
 
 func (d Date) asTime() time.Time {
 	if !d.IsValid() {

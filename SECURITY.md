@@ -4,11 +4,12 @@ Report vulnerabilities privately through GitHub's security-advisory feature.
 
 | Version | Supported |
 | --- | --- |
-| 1.x | Yes |
+| 2.x | Prepared on main; not published |
+| 1.x | Latest published line; report affected versions |
 | < 1.0 | No |
 
-Security fixes are applied to the current v1 line and released from a supported
-v1 revision. Reports should identify the affected package, version, input
+Main prepares an intentional v2 security boundary; this is not a published
+security-fix claim for v1. Reports should identify the affected package, version, input
 boundary, and observable impact without including production credentials or
 private user data.
 
