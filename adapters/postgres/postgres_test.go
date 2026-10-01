@@ -52,6 +52,34 @@ func TestOrdinaryDateRejectsNullInfinityAndInvalidValues(t *testing.T) {
 	}
 }
 
+func TestSQLByteTokenAdmissionPreservesReceiver(t *testing.T) {
+	retained := calendar.MustDate(2000, time.January, 1)
+	ordinary := calendarpg.NewDate(retained)
+	withInfinity := calendarpg.NewFiniteDate(retained)
+	for name, scanner := range map[string]interface{ Scan(any) error }{
+		"ordinary":       &ordinary,
+		"infinity-aware": &withInfinity,
+	} {
+		t.Run(name, func(t *testing.T) {
+			if err := scanner.Scan([]byte("2024-02-29 ")); !errors.Is(err, calendar.ErrInvalidFormat) {
+				t.Fatalf("11-byte token error=%v, want invalid format", err)
+			}
+		})
+	}
+	if ordinary.CalendarDate() != retained || withInfinity.Date() != retained || withInfinity.Kind() != calendarpg.Finite {
+		t.Fatal("rejected SQL byte token changed retained date or infinity kind")
+	}
+	for _, scanner := range []interface{ Scan(any) error }{&ordinary, &withInfinity} {
+		if err := scanner.Scan([]byte("2024-02-29")); err != nil {
+			t.Fatalf("10-byte token error=%v", err)
+		}
+	}
+	want := calendar.MustDate(2024, time.February, 29)
+	if ordinary.CalendarDate() != want || withInfinity.Date() != want || withInfinity.Kind() != calendarpg.Finite {
+		t.Fatal("valid SQL byte token did not retain the finite leap-day date")
+	}
+}
+
 func TestInfinityDateIsDistinctAndRoundTrips(t *testing.T) {
 	t.Parallel()
 

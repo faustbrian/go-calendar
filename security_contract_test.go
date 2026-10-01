@@ -38,6 +38,21 @@ func TestDateJSONEnvelopePreservesGenericSemanticsAndAtomicity(t *testing.T) {
 	}
 }
 
+func TestDateTextRejectsInvalidCanonicalDateAtomically(t *testing.T) {
+	retained := calendar.MustDate(2000, time.January, 1)
+	decoded := retained
+	err := decoded.UnmarshalText([]byte("2024-02-30"))
+	if !errors.Is(err, calendar.ErrInvalidFormat) || !errors.Is(err, calendar.ErrInvalidDate) {
+		t.Fatalf("invalid calendar date classification=%v", err)
+	}
+	if decoded != retained {
+		t.Fatalf("rejected text changed receiver=%v, want %v", decoded, retained)
+	}
+	if err := decoded.UnmarshalText([]byte("2024-02-29")); err != nil || decoded != calendar.MustDate(2024, time.February, 29) {
+		t.Fatalf("valid leap-day text decoded=%v error=%v", decoded, err)
+	}
+}
+
 func TestCalendarDiagnosticsOmitCallerComponents(t *testing.T) {
 	tests := []struct {
 		name    string
