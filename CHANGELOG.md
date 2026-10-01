@@ -5,15 +5,13 @@ versioning.
 
 ## Unreleased
 
+## 2.0.0 - 2026-10-01
+
 ### Changed
 
 - Update the PostgreSQL adapter's pgx dependency to v5.11.0. Native text
   decoding now rejects impossible dates rather than normalizing them;
   calendar date, NULL, and infinity interfaces remain unchanged.
-
-## 2.0.0
-
-### Changed
 
 - Use the `github.com/faustbrian/go-calendar/v2` module and import paths on
   main with Go 1.27.0. All canonical adapters and supported compatibility
