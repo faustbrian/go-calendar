@@ -2,12 +2,42 @@ package business_test
 
 import (
 	"errors"
+	"strings"
 	"testing"
 	"time"
 
 	calendar "github.com/faustbrian/go-calendar/v2"
 	"github.com/faustbrian/go-calendar/v2/business"
 )
+
+func TestCalendarIdentityByteLimitsAreInclusive(t *testing.T) {
+	date := calendar.MustDate(2024, time.February, 29)
+	revision := strings.Repeat("r", 128)
+	key := strings.Repeat("k", 128)
+	value := strings.Repeat("v", 1024)
+	metadata := map[string]string{key: value}
+	holiday, err := business.NewHoliday(date, "Leap day", metadata)
+	if err != nil {
+		t.Fatalf("exact-limit metadata rejected: %v", err)
+	}
+	cal, err := business.NewCalendar(business.Config{Revision: revision, Holidays: []business.Holiday{holiday}})
+	if err != nil || !cal.IsValid() || cal.Revision() != revision {
+		t.Fatalf("exact-limit revision calendar=%v error=%v", cal.Revision(), err)
+	}
+	metadata[key] = "changed"
+	got := cal.Holidays(date)
+	if len(got) != 1 || got[0].Date() != date || got[0].Name() != "Leap day" || got[0].Metadata()[key] != value || cal.IsBusinessDay(date) {
+		t.Fatal("exact-limit holiday identity was not retained independently")
+	}
+	if rejected, err := business.NewCalendar(business.Config{Revision: revision + "r"}); !errors.Is(err, business.ErrInvalidCalendar) || rejected.IsValid() {
+		t.Fatalf("over-limit revision accepted or misclassified: %v", err)
+	}
+	for _, input := range []map[string]string{{key + "k": value}, {key: value + "v"}} {
+		if rejected, err := business.NewHoliday(date, "Leap day", input); !errors.Is(err, business.ErrInvalidHoliday) || rejected.Date().IsValid() {
+			t.Fatalf("over-limit metadata accepted or misclassified: %v", err)
+		}
+	}
+}
 
 func TestCalendarBusinessDayCalculations(t *testing.T) {
 	t.Parallel()
