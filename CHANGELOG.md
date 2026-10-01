@@ -5,6 +5,12 @@ versioning.
 
 ## Unreleased
 
+### Changed
+
+- Update the PostgreSQL adapter's pgx dependency to v5.11.0. Native text
+  decoding now rejects impossible dates rather than normalizing them;
+  calendar date, NULL, and infinity interfaces remain unchanged.
+
 ## 2.0.0
 
 ### Changed
