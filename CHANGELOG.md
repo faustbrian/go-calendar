@@ -5,7 +5,7 @@ versioning.
 
 ## Unreleased
 
-## 2.0.0 - Prepared, not published
+## 2.0.0
 
 ### Changed
 

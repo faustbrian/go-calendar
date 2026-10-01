@@ -1,8 +1,9 @@
 # V2 migration
 
-V2.0.0 is prepared on main, not yet published. The latest stable release is
-v1.1.0. Production source remains at the repository root, without version
-directories or branches.
+This guide describes v2.0.0 source on main. Public tags and GitHub releases
+establish publication status; do not infer publication from this guide.
+Production source remains at the repository root, without version directories
+or branches. Published v1.1.0 remains a distinct historical module identity.
 
 When the release is published, require `github.com/faustbrian/go-calendar/v2`
 and change every owning Calendar import to that prefix. The 16 root-module

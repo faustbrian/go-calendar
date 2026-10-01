@@ -8,9 +8,10 @@ PostgreSQL integration targets maintained versions 14 through 18. pgx v5.10.0
 is pinned. Public API drift is checked against `api/calendar-v2.txt`; deliberate
 breaking changes require a major version after v1.
 
-Main prepares v2.0.0 with the official `/v2` module suffix. The unchanged
+Main contains v2.0.0 with the official `/v2` module suffix. The unchanged
 `api/baseline.txt` records the historical v1 baseline, not the active v2 API.
-Latest published v1.1.0 remains separate from this candidate. See
+Published v1.1.0 remains separate from the v2 source. Public tags and releases
+establish v2 publication status. See
 [v2 migration](v2-migration.md) for decoding, diagnostics, and type-identity
 changes.
 
