@@ -60,6 +60,11 @@ func MatchOffset(offsetSeconds int) Resolution { return offsetMatch{seconds: off
 // LoadLocation validates a bounded IANA name before delegating transition
 // calculation to the standard library's authoritative timezone loader.
 func LoadLocation(name string) (*time.Location, error) {
+	return loadLocation(name, time.LoadLocation)
+}
+
+// loadLocation owns admission before the loader can access timezone data.
+func loadLocation(name string, loader func(string) (*time.Location, error)) (*time.Location, error) {
 	if name == "" || len(name) > MaxZoneNameBytes || !utf8.ValidString(name) || strings.HasPrefix(name, "/") || strings.Contains(name, "\\") {
 		return nil, ErrInvalidZone
 	}
@@ -68,7 +73,7 @@ func LoadLocation(name string) (*time.Location, error) {
 			return nil, ErrInvalidZone
 		}
 	}
-	location, err := time.LoadLocation(name)
+	location, err := loader(name)
 	if err != nil {
 		return nil, ErrInvalidZone
 	}
