@@ -2,7 +2,8 @@
 
 Version: `CALENDAR-TM-2.0`
 
-Candidate scope updated: 2026-10-01; independent release review pending.
+Scope updated: 2026-10-04. Root v2.0.0 was published on 2026-10-01;
+whole-family security qualification remains open.
 
 Owner: go-calendar maintainers
 
@@ -51,7 +52,7 @@ Severity describes impact under the documented trust assumptions.
 | --- | --- | --- | --- | --- |
 | CAL-SEC-001 | Malformed or extreme date and period input causes parser differentials, integer overflow, or invalid civil state. | High | Mitigated | Maintainers own exact ASCII grammars, supported-year validation, checked arithmetic, ordinal bounds, sealed policies, fuzzing, exhaustive Gregorian checks, and mutation tests. Review any parser, representation, range, or arithmetic change. |
 | CAL-SEC-002 | Oversized SQL `[]byte` input is copied before rejection and amplifies memory use. | Medium | Fixed | Maintainers reject byte slices longer than the longest accepted SQL token before conversion while preserving accepted values and error identity. The allocation regression exercises a 1 MiB rejected value. Review SQL scanner or token changes. |
-| CAL-SEC-003 | Generic date JSON work grows with its representation envelope. | Medium | Mitigated in v2 source | Maintainers own a 64-byte pre-decoder admission cap, preserve legitimate escaped dates and whitespace inside that envelope, and leave receivers unchanged on rejection. The separate wire adapter retains its exact 12-byte grammar. Integrators still bound outer request buffers before they reach this API. Review JSON grammar, envelope limits, decoder changes, or an incident; do not claim the v2 source fixes published v1. |
+| CAL-SEC-003 | Generic date JSON work grows with its representation envelope. | Medium | Mitigated in published v2.0.0 | Maintainers own a 64-byte pre-decoder admission cap, preserve legitimate escaped dates and whitespace inside that envelope, and leave receivers unchanged on rejection. The separate wire adapter retains its exact 12-byte grammar. Integrators still bound outer request buffers before they reach this API. Review JSON grammar, envelope limits, decoder changes, or an incident; do not claim the v2 source fixes published v1. |
 | CAL-SEC-004 | Timezone gaps, folds, aliases, unusual offsets, or tzdata drift produce an unintended instant. | High | Mitigated subject to trusted tzdata | Maintainers require an explicit location and resolution policy, enumerate verified occurrences with bounded work, and test historical and date-line transitions against the standard library. Deployment owners pin or record tzdata when results must be reproducible. Review timezone logic, supported platforms, tzdata changes, or a conversion incident. |
 | CAL-SEC-005 | A crafted zone name causes path traversal or unbounded timezone lookup work. | High | Mitigated | Maintainers cap names before lookup, reject invalid UTF-8, absolute names, backslashes, and empty, dot, or parent segments, then delegate only transition calculation to `time.LoadLocation`. Fuzz and hostile-name tests cover this boundary. Review loading or name-policy changes. |
 | CAL-SEC-006 | Mutable or oversized business data changes decisions or creates unbounded validation/search work. | High | Mitigated in v2 source | Maintainers cap holidays, supplied weekend entries, metadata, names, revisions, and provenance fields; reject oversized strings before UTF-8 scans; validate enums; deep-copy inputs and outputs; and require a positive search limit. Existing immutable calendar, closed-calendar, and bounded-input regressions cover these controls; seven/eight-weekday controls characterize the new count admission. Review configuration, observance, copying, validation order, or iteration changes. |
@@ -70,7 +71,7 @@ business-search, or persistence control.
 
 ## Compatibility, consumers, and release disposition
 
-The historical v1.1.0 API baseline remains unchanged. The active candidate uses
+The historical v1.1.0 API baseline remains unchanged. Published v2.0.0 uses
 the official `/v2` module/import suffix and an independent v2 API baseline. Direct
 owned consumers are go-opening-hours, go-temporal, and the
 go-rule-engine temporal adapter. They use root dates, business calendars,
@@ -78,7 +79,7 @@ timezone conversion, and deprecated temporal compatibility paths; none depends
 on copying oversized rejected PostgreSQL byte values.
 
 Public tags and releases establish v2.0.0 publication status. V1.1.0 does not contain
-the SQL allocation repair or the candidate's bounded generic JSON and default
+the SQL allocation repair or v2.0.0's bounded generic JSON and default
 diagnostic policies. The existing SQL repair changes only resource use for
 input that already returned `calendar.ErrInvalidFormat`. Generic JSON envelope
 rejection and diagnostic changes are intentional v2 contracts, while valid
@@ -88,9 +89,13 @@ aliases and Temporal callers require deliberate consumer migration, not a
 silent dependency replacement. See [v2 migration](v2-migration.md). The root
 module contains no local replacement directive.
 
-The module is releasable subject to fresh candidate-revision gates and hosted
-CI. Scanner results are execution evidence, not durable source claims; a
-failed or unavailable required gate blocks a release-ready verdict.
+Root v2.0.0 is published and has been verified through actual clean public
+consumption. Publication does not complete downstream adoption or the shared
+owned-analysis and history-scanning qualification required by the ecosystem
+security objective. Those boundaries remain separately tracked; no whole-family
+completion is claimed. Scanner results are execution evidence, not durable
+source claims. Future releases still require their applicable source gates and
+hosted CI; a failed or unavailable required gate blocks release readiness.
 
 The generic JSON cap applies at the direct `Date.UnmarshalJSON` boundary.
 An enclosing `encoding/json` decoder scans its input first and can strip outer
