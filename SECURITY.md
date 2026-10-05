@@ -4,14 +4,14 @@ Report vulnerabilities privately through GitHub's security-advisory feature.
 
 | Version | Supported |
 | --- | --- |
-| 2.x | Prepared on main; not published |
-| 1.x | Latest published line; report affected versions |
+| 2.x | Supported public line, starting with v2.0.0 |
+| 1.x | Retained public line; report affected versions separately |
 | < 1.0 | No |
 
-Main prepares an intentional v2 security boundary; this is not a published
-security-fix claim for v1. Reports should identify the affected package, version, input
-boundary, and observable impact without including production credentials or
-private user data.
+Published v2.0.0 establishes an intentional security boundary; its controls
+are not a security-fix claim for v1. Reports should identify the affected
+package, version, input boundary, and observable impact without including
+production credentials or private user data.
 
 ## Response process
 
