@@ -26,9 +26,9 @@ permissions:
 jobs:
   ci:
     if: github.event_name != 'workflow_dispatch' || !inputs.security_diagnostic
-    uses: faustbrian/go-library-tools/.github/workflows/library-ci.yml@5ad0adb193a46306b4500b8b59cee9ec110fdee3
+    uses: faustbrian/go-library-tools/.github/workflows/library-ci.yml@aa730a67fb33b378889bda98497e406ed02c793a
     with:
-      tooling_sha: 5ad0adb193a46306b4500b8b59cee9ec110fdee3
+      tooling_sha: aa730a67fb33b378889bda98497e406ed02c793a
       source_bootstrap: true
       public_dependencies: true
       release_dry_run: ${{ inputs.release_dry_run || false }}
@@ -107,6 +107,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: '1.27.0'
@@ -165,6 +167,8 @@ jobs:
           --health-retries 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: '1.27.0'
