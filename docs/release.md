@@ -1,6 +1,7 @@
 # Release process
 
-1. Use a clean tree and the pinned Go 1.27.0 toolchain.
+1. Use a clean tree and the pinned Go 1.27.2 release producer. The public module
+   minimum remains Go 1.27.0.
 2. Update [CHANGELOG.md](../CHANGELOG.md) and version guidance.
 3. Run `golib check --all`; inspect advisory NilAway output.
 4. Dispatch `ci.yml` with `release_dry_run=true` to run the shared release

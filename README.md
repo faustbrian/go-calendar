@@ -3,7 +3,7 @@
 [![CI](https://github.com/faustbrian/go-calendar/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/faustbrian/go-calendar/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/badge/CodeQL-required-blue)](https://github.com/faustbrian/go-calendar/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-100%25_required-blue)](CONTRIBUTING.md#verification)
-[![Mutation](https://img.shields.io/badge/mutation-100%25_required-blue)](CONTRIBUTING.md#verification)
+[![Mutation](https://img.shields.io/badge/mutation-local_and_scheduled-blue)](CONTRIBUTING.md#verification)
 [![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-calendar.svg)](https://pkg.go.dev/github.com/faustbrian/go-calendar)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-calendar?sort=semver)](https://github.com/faustbrian/go-calendar/releases)
@@ -70,10 +70,13 @@ Start with the [five-minute guide](docs/quickstart.md), then use the
 
 ## Quality
 
-`golib check --all` reproduces every blocking local gate and reports advisory
-NilAway findings. Production packages maintain meaningful 100.0%
-statement coverage; `calendartest` is test-support code and is excluded from
-that denominator. See [verification](docs/verification.md).
+Start standalone changes with `go test ./...`. With the qualified public
+verifier, `make check` and `make ci` select bounded local checks;
+`make check-full` preserves explicit full assurance. The manifest's PostgreSQL
+service and integration tag make the Make route distinct from untagged Go tests.
+See [contributor verification](CONTRIBUTING.md#verification) for focused fuzzing,
+optional local mutation, service and release boundaries, and
+[verification](docs/verification.md) for the retained behavioral evidence.
 
 For ecosystem-wide selection and ownership guidance, see the versioned
 [Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md)

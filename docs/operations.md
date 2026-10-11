@@ -1,9 +1,10 @@
 # Operations
 
-Pin Go 1.27.0 and the `golib` release declared by `.golib.yaml`. Run
-`golib check --all` before release and after OS, container, Go, or tzdata
-updates. Review transition
-corpus drift rather than weakening assertions.
+Use the Go 1.27.2 CI producer and the public `golib` release declared by
+`.golib.yaml`; the module minimum remains Go 1.27.0. Run
+`make check-full` for relevant release qualification and after OS, container,
+Go, or tzdata updates. Review transition corpus drift rather than weakening
+assertions.
 
 Monitor classified error counts (`invalid_date`, `nonexistent`, `ambiguous`,
 `search_limit`) using bounded labels. Record calendar revision and dataset

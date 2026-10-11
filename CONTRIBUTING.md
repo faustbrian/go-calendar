@@ -2,8 +2,8 @@
 
 ## Before Editing
 
-1. Read [`AGENTS.md`](AGENTS.md) and the affected module's goals and docs.
-2. Run `make inventory` and the narrow baseline gate for the module.
+1. Read [`AGENTS.md`](AGENTS.md) and the affected package's docs.
+2. Run `go test ./...` or the affected package's narrower tests.
 3. Identify owned dependencies and reverse dependants in `modules.json`.
 4. Preserve unrelated work and generated/corpus provenance.
 
@@ -24,7 +24,9 @@ the affected stable decision entries, and complete the Specification Decisions
 section of the pull request template. An unresolved interpretation or stale
 source pin is release-blocking; peer behavior cannot silently select policy.
 
-Required mutation gates must finish with zero surviving viable mutants.
+Mutation is optional local or scheduled assurance, not a required PR status.
+Confirmed behavioral and security defects still require a focused regression
+and repair; equivalent/invalid mutants retain reviewed narrow dispositions.
 
 Do not add package-local workflows, permanent replacements, machine-specific
 paths, bypass flags, broad mutation exclusions, or aggregate quality metrics
@@ -32,21 +34,49 @@ that hide a failing package.
 
 ## Verification
 
-Run during development:
+Standalone `go test ./...` runs deterministic tests, fuzz seeds and saved corpus
+regressions. It needs no sibling checkout or ecosystem goal ledger. Tagged live
+PostgreSQL tests are separate from this untagged Go route.
+
+With the checksum-pinned public verifier selected by `.golib.yaml`, use:
 
 ```bash
 make inventory
 make check
-```
-
-Before submitting a repository-wide change:
-
-```bash
 make ci
 ```
 
-The full scheduled and release gate is `make ci`. Report every unavailable or
-failing command; do not describe partial results as release-ready.
+`check` and `ci` use bounded local checks; ordinary CI consumes the public
+binary rather than building the verifier from source. The manifest requires
+PostgreSQL and the `integration` test tag, so the service-aware Make route may
+require Docker and is not equivalent to untagged Go tests. No new ordinary race
+campaign is required for the immutable core. Public API, timezone, persistence
+and adapter changes retain their affected compatibility, integration, corpus
+and direct-consumer checks. Preserve the holiday-dataset provenance contract.
+
+Short active exploration selects one target. Optional local mutation selects
+one package; neither command is an all-change prerequisite:
+
+```bash
+GOMAXPROCS=2 go test -run '^$' -fuzz '^FuzzParseDate$' -fuzztime=2s -parallel=1 -timeout=2m .
+golib mutation --module . --package ./business
+```
+
+For PostgreSQL changes, use a disposable database and run both the canonical
+and retained adapters. Never use a shared or production database:
+
+```bash
+POSTGRES_URL='postgres://postgres:postgres@127.0.0.1:5432/calendar?sslmode=disable' \
+go test -tags=integration -run '^TestPostgreSQLDateRoundTrip$' -count=1 -timeout=5m ./adapters/postgres ./postgres
+```
+
+`make check-full` preserves explicit full assurance, including the timezone
+selection, provenance refusal, all eleven native fuzz budgets and benchmarks.
+Relevant release qualification uses `golib release dry-run --module .`; the
+manual release workflow additionally retains its OS and PostgreSQL matrices.
+The selected security diagnostic remains development qualification, not release
+substitution. Report unavailable, skipped and failed boundaries honestly; a
+local pass is not full assurance, hosted-CI or public-release qualification.
 
 ## Adding A Module
 

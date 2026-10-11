@@ -15,11 +15,24 @@
 
 ## Local release command matrix
 
-| Command | Scope | Latest local result |
+Ordinary standalone development uses `go test ./...`. With the qualified public
+verifier, `make check` and `make ci` select bounded local checks, not the full
+matrix below. The manifest's PostgreSQL service and integration tag make that
+Make route different from untagged Go tests. Focused active fuzzing, optional
+single-package mutation and live backend instructions are in
+[contributor verification](../CONTRIBUTING.md#verification).
+
+| Command | Scope | Selection boundary |
 | --- | --- | --- |
-| `golib repository check` | manifests and repository policy | required |
-| `golib check --module .` | tests, race, coverage, mutation, fuzz, API, docs, analyzers, PostgreSQL, provenance, and benchmarks | required |
-| Shared CI `Required` job | hosted workflow and CodeQL contract | required |
+| `golib repository check` | manifests and repository policy | repository validation |
+| `make check-full` | tests, race, coverage, mutation, fuzz, API, docs, analyzers, PostgreSQL, provenance, and benchmarks | relevant full assurance |
+| `golib release dry-run --module .` | selected root release contract | explicit release qualification |
+| Shared CI `Required` job | applicable hosted workflow and CodeQL contract | exact-source delivery |
+
+Mutation is optional local or scheduled assurance, not a required PR status.
+The full fuzz mapping and budgets remain unchanged. Existing immutable-read
+race tests remain available at their named risk/full boundary; no new race
+campaign is required for stateless date arithmetic.
 
 See the [Gregorian/ISO vectors](gregorian-iso-vectors.md) and
 [timezone corpus](timezone-corpus.md) for the human-reviewable truth tables.
@@ -35,7 +48,7 @@ See the [Gregorian/ISO vectors](gregorian-iso-vectors.md) and
 | Clamp, reject, overflow, and signed movement | `TestArithmeticPolicyMatrix`, `TestDateArithmeticPolicies`, and `TestNamedSubtractionAndComponentDifference` |
 | Policy-permitted add/subtract inverses | `TestMonthArithmeticInverseWhenDayIsPreserved` plus `FuzzDateArithmeticNeverPanics` |
 | Minimum, maximum, zero, native integer overflow, and unsupported policy states | `TestDateDayArithmeticRejectsSupportedRangeOverflow`, `TestDateAndPeriodEdgeContracts`, and `TestTypedPeriodEdgeContracts` |
-| Mutation sensitivity | `golib mutation --module .` requires every viable package mutant to be killed |
+| Mutation sensitivity | Local/scheduled mutation diagnoses assertion gaps; confirmed behavioral defects require focused regression and repair, with reviewed equivalent/invalid dispositions retained |
 
 ### Timezone and DST
 
@@ -87,9 +100,10 @@ The local blocking matrix rejects invalid dates, wrong ISO results, arithmetic
 policy drift, DST misresolution, unbounded business searches, caller-data
 mutation, persistence corruption, races, panics, and resource-limit bypasses.
 No holiday dataset is bundled, day ranges use next-day exclusive instants, and
-coverage and curated mutation gates are exact blockers. Hosted CI for the exact
-release revision remains a separate mandatory gate; local success does not
-substitute for a green hosted run.
+the full coverage contract remains unchanged. Confirmed defects block affected
+delivery; optional mutation does not become an ordinary PR prerequisite. Hosted
+CI for the exact release revision remains a separate mandatory gate; local
+success does not substitute for a green hosted run.
 
 `calendartest` contains failure-reporting helpers whose failing branches cannot
 be executed without intentionally failing a test. It is excluded from the
