@@ -100,3 +100,12 @@ this owned prose boundary. Exact task-owned caches and helpers were removed
 immediately after both bounded native sessions. No generator, live database,
 race, active fuzz, security qualification or release consumer was executed.
 The coordinator retains remote delivery and required exact-source CI ownership.
+
+## Objective Enforcement
+
+The checksum-pinned public Tools v2.4.0 verifier now supplies
+`make source-docs-check` as a prerequisite of the existing local and CI Make
+routes. Ordinary shared CI selects strict source-documentation checking and
+requires its result. Native prerequisites, operation budgets, security and
+release controls are retained. Hosted exact-head evidence is recorded by the
+coordination ledger; configuration alone does not establish green delivery.
