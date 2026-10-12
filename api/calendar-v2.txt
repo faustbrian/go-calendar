@@ -1,7 +1,13 @@
 package calendar // import "github.com/faustbrian/go-calendar/v2"
 
 Package calendar provides immutable civil-calendar values and arithmetic.
-A Date represents a Gregorian calendar day, never an instant or timezone.
+A Date represents a Gregorian calendar day, never an instant or timezone. Values
+are immutable and concurrent-readable; decoding methods mutate their receiver
+and require exclusive ownership. Use NewDate/ParseDate, explicit arithmetic
+policies and explicit locations only at conversion boundaries. Supported years
+are 0001–9999; boundary helpers can return an invalid Date when a complete week
+falls outside that range. No clock, IO, locale formatting or goroutine lifecycle
+is owned by this core.
 
 CONSTANTS
 
@@ -43,9 +49,12 @@ const (
 	Overflow
 )
 type ComponentDifference struct {
-	Years  int
+	// Years is the first signed calendar movement under the selected policy.
+	Years int
+	// Months is applied after Years under the same policy, not as elapsed duration.
 	Months int
-	Days   int
+	// Days is the exact civil remainder after year/month movements.
+	Days int
 }
     ComponentDifference is a signed calendar decomposition. Years are applied
     first, then months under the caller's policy, then exact calendar days. All
@@ -75,7 +84,9 @@ func (d Date) AddDays(days int) (Date, error)
     AddDays adds calendar days, never elapsed durations.
 
 func (d Date) AddMonths(months int, policy ArithmeticPolicy) (Date, error)
-    AddMonths adds calendar months using policy.
+    AddMonths adds calendar months using policy. Clamp uses the target month
+    end, Reject requires the original day, and Overflow carries excess days
+    forward from the target month even for a negative month movement.
 
 func (d Date) AddQuarters(quarters int, policy ArithmeticPolicy) (Date, error)
     AddQuarters adds three months per quarter using policy.
@@ -94,8 +105,11 @@ func (d Date) Compare(other Date) (int, error)
     It returns ErrInvalidDate if either operand is invalid.
 
 func (d Date) ComponentsUntil(other Date, policy ArithmeticPolicy) (ComponentDifference, error)
-    ComponentsUntil decomposes the movement from d to other into years, months,
-    and days using the caller's explicit month/year arithmetic policy.
+    ComponentsUntil decomposes the movement from d to other into years,
+    months, and days using the caller's explicit month/year arithmetic policy.
+    Equal valid dates return zero components before checking policy. Reject
+    can fail on an intermediate anniversary/month rather than seeking another
+    decomposition.
 
 func (d Date) Day() int
     Day returns the day of month, or zero for an invalid Date.
@@ -110,10 +124,12 @@ func (d Date) DaysUntil(other Date) int
     DaysUntil returns other-d in calendar days. Invalid operands return zero.
 
 func (d Date) EndOfISOWeek() Date
-    EndOfISOWeek returns Sunday of d's ISO week.
+    EndOfISOWeek returns Sunday of d's ISO week, or an invalid Date beyond the
+    supported range; it does not clip a boundary week to MaxYear.
 
 func (d Date) EndOfISOYear() Date
-    EndOfISOYear returns Sunday of the last week in d's ISO week-year.
+    EndOfISOYear returns Sunday of the last week in d's ISO week-year, or an
+    invalid Date if that Sunday is outside the supported civil range.
 
 func (d Date) EndOfMonth() Date
     EndOfMonth returns the last date in d's month.
@@ -143,13 +159,15 @@ func (d Date) MarshalJSON() ([]byte, error)
     MarshalJSON encodes a Date as its canonical JSON string.
 
 func (d Date) MarshalText() ([]byte, error)
-    MarshalText implements encoding.TextMarshaler.
+    MarshalText returns owned canonical bytes or ErrInvalidDate; no locale data
+    or instant conversion is used.
 
 func (d Date) Month() time.Month
     Month returns the Gregorian month, or zero for an invalid Date.
 
 func (d Date) StartOfISOWeek() Date
-    StartOfISOWeek returns Monday of d's ISO week.
+    StartOfISOWeek returns Monday of d's ISO week, or an invalid Date when d or
+    the complete week boundary is outside the supported civil range.
 
 func (d Date) StartOfISOYear() Date
     StartOfISOYear returns Monday of week 1 in d's ISO week-year.
@@ -194,10 +212,12 @@ func (d *Date) UnmarshalJSON(data []byte) error
     of a decoder cause that may contain caller data.
 
 func (d *Date) UnmarshalText(text []byte) error
-    UnmarshalText implements encoding.TextUnmarshaler.
+    UnmarshalText admits exactly ten canonical bytes, then replaces the
+    receiver. Nil receivers fail and rejected input leaves the receiver
+    unchanged.
 
 func (d Date) Weekday() time.Weekday
-    Weekday returns d's weekday. It returns time.Sunday for an invalid Date;
+    Weekday returns d's weekday. It returns time.Monday for an invalid Date;
     callers that may hold a zero value should check IsValid first.
 
 func (d Date) Year() int
@@ -206,7 +226,9 @@ func (d Date) Year() int
 type ISOWeek struct {
 	// Has unexported fields.
 }
-    ISOWeek is an immutable ISO 8601 week-year and week.
+    ISOWeek is an immutable ISO 8601 week-year and week using Go time.ISOWeek
+    numbering. Validation checks the week number, not representability of every
+    member day: the final Sunday of a valid boundary week can be out of range.
 
 func NewISOWeek(year, week int) (ISOWeek, error)
     NewISOWeek validates and constructs an ISO week.
@@ -230,7 +252,8 @@ func (w ISOWeek) IsValid() bool
     IsValid reports whether w exists.
 
 func (w ISOWeek) LastDate() Date
-    LastDate returns Sunday of w.
+    LastDate returns Sunday of w, or an invalid Date when that boundary falls
+    outside years 1–9999 or w is invalid.
 
 func (w ISOWeek) String() string
     String returns YYYY-Www, or an empty string when invalid.
@@ -333,13 +356,15 @@ func NewWeekPolicy(start time.Weekday) (WeekPolicy, error)
     NewWeekPolicy validates and constructs a week policy.
 
 func (p WeekPolicy) EndOfWeek(d Date) Date
-    EndOfWeek returns the final date of d's policy-defined week.
+    EndOfWeek returns the final date of d's policy-defined week, or an invalid
+    Date if the complete boundary is outside the supported civil range.
 
 func (p WeekPolicy) IsValid() bool
     IsValid reports whether p was constructed by NewWeekPolicy.
 
 func (p WeekPolicy) StartOfWeek(d Date) Date
-    StartOfWeek returns the first date of d's policy-defined week.
+    StartOfWeek returns the first date of d's policy-defined week. Invalid
+    operands or an unrepresentable boundary return an invalid Date, not a clip.
 
 func (p WeekPolicy) WeekStart() time.Weekday
     WeekStart returns the configured first weekday.
@@ -356,7 +381,8 @@ func ParseYear(input string) (Year, error)
     ParseYear parses exactly YYYY.
 
 func (y Year) Add(years int) (Year, error)
-    Add returns a year offset from y.
+    Add returns a year offset from y, rejecting unsupported results with
+    ErrInvalidDate rather than the Date arithmetic ErrArithmetic classification.
 
 func (y Year) Compare(other Year) (int, error)
     Compare returns -1, 0, or 1 according to chronological ordering.
@@ -431,7 +457,9 @@ func (ym YearMonth) Year() int
 
 package calendarclock // import "github.com/faustbrian/go-calendar/v2/adapters/clock"
 
-Package calendarclock adapts a narrow wall-clock source to civil dates.
+Package calendarclock adapts a caller-owned wall-clock source to civil dates.
+Today performs one synchronous call and owns no cancellation or clock lifecycle.
+Supply an explicit non-nil location and a bounded usable clock implementation.
 
 VARIABLES
 
@@ -442,12 +470,16 @@ var ErrClockRequired = errors.New("calendar/clock: clock required")
 FUNCTIONS
 
 func Today(clock Clock, location *time.Location) (calendar.Date, error)
-    Today obtains the civil date observed in an explicit location.
+    Today calls Now once, then extracts civil components in an explicit
+    location. Nil clock interfaces fail; typed-nil/custom callback behavior is
+    not recovered. A nil location is rejected after the clock call. No deadline
+    is imposed.
 
 
 TYPES
 
 type Clock interface {
+	// Now returns a bounded synchronous instant; caller owns concurrency and panic behavior.
 	Now() time.Time
 }
     Clock is the exact wall-clock capability provided by clock.Clock.
@@ -455,6 +487,9 @@ type Clock interface {
 package calendarconfig // import "github.com/faustbrian/go-calendar/v2/adapters/config"
 
 Package calendarconfig provides strict config-compatible civil values.
+NewDate wraps without validation; decoding replaces a receiver only on success.
+Mutating receivers need exclusive ownership. No config registry, global state,
+IO or lifecycle is introduced.
 
 TYPES
 
@@ -473,7 +508,8 @@ func (d Date) MarshalText() ([]byte, error)
     MarshalText returns the canonical configuration value.
 
 func (d *Date) UnmarshalConfigValue(value any) error
-    UnmarshalConfigValue accepts only a canonical date string.
+    UnmarshalConfigValue accepts only a canonical string and preserves the
+    receiver on failure; nil receivers are rejected.
 
 func (d *Date) UnmarshalText(text []byte) error
     UnmarshalText decodes a canonical configuration value.
@@ -481,8 +517,10 @@ func (d *Date) UnmarshalText(text []byte) error
 package calendarpostgres // import "github.com/faustbrian/go-calendar/v2/adapters/postgres"
 
 Package calendarpostgres provides database/sql and pgx adapters for PostgreSQL
-date. Ordinary Date rejects NULL and infinity; InfinityDate models those
-sentinels explicitly when an application needs them.
+date. Date rejects NULL/infinity; InfinityDate models infinities but also
+rejects NULL. Scan receivers require exclusive mutable ownership; concurrent
+read-only encoding uses immutable values. This package owns no connection,
+query, migration, transaction or database lifecycle.
 
 VARIABLES
 
@@ -511,10 +549,13 @@ func (d Date) DateValue() (pgtype.Date, error)
     DateValue implements pgtype.DateValuer.
 
 func (d *Date) Scan(source any) error
-    Scan implements database/sql.Scanner.
+    Scan accepts canonical text/bytes or time.Time civil components. It rejects
+    NULL, unsupported types and infinity for ordinary Date. Nil receivers fail;
+    errors preserve the receiver and no implicit timezone conversion is applied.
 
 func (d *Date) ScanDate(value pgtype.Date) error
-    ScanDate implements pgtype.DateScanner.
+    ScanDate rejects invalid/null/infinite pgx values and preserves the receiver
+    on failure. Finite time components are taken in their supplied location.
 
 func (d Date) Value() (driver.Value, error)
     Value implements database/sql/driver.Valuer using canonical date text.
@@ -564,7 +605,10 @@ const (
 package calendartemporal // import "github.com/faustbrian/go-calendar/v2/adapters/temporal"
 
 Package calendartemporal converts civil boundaries into values suitable for
-temporal without adding interval algebra to calendar core.
+temporal without adding interval algebra to calendar core. Sequence owns
+returned dates and admits its inclusive count before allocation. Instant
+boundaries require explicit location/policy; the next day after an inclusive end
+must be representable. No scheduler or interval lifecycle is owned.
 
 VARIABLES
 
@@ -591,6 +635,8 @@ type InstantRange struct {
 func InclusiveDates(first, last calendar.Date, location *time.Location, policy calendartz.Resolution) (InstantRange, error)
     InclusiveDates converts inclusive civil endpoints to an exclusive instant
     range. Its boundaries can be passed directly to temporal/instant.Range.
+    Both midnights must resolve; the maximum supported last date is rejected
+    rather than fabricating an exclusive endpoint outside the civil range.
 
 func (r InstantRange) End() time.Time
     End returns the exclusive instant boundary.
@@ -603,8 +649,11 @@ func (r InstantRange) Start() time.Time
 
 package calendarvalidation // import "github.com/faustbrian/go-calendar/v2/adapters/validation"
 
-Package calendarvalidation provides dependency-neutral rules that can be wrapped
-by validation ValidatorFunc without coupling calendar core to it.
+Package calendarvalidation provides dependency-neutral rules that can be
+wrapped by validation ValidatorFunc without coupling calendar core to it.
+Built-in closures retain copied bounds and are concurrent-safe; arbitrary caller
+Rules own their mutation, panic and blocking behavior. No validation registry,
+IO, context deadline or worker lifecycle is introduced.
 
 VARIABLES
 
@@ -629,6 +678,10 @@ func ValidDate() Rule
 package calendarwire // import "github.com/faustbrian/go-calendar/v2/adapters/wire"
 
 Package calendarwire provides bounded canonical wire helpers for Date.
+EncodeDate returns owned bytes. DecodeDate borrows input only during its call
+and accepts exactly the 12-byte unescaped JSON date string, not the broader
+generic Date JSON grammar. Version is external contract metadata, not an
+envelope byte; upstream payload acquisition/decompression remains caller-owned.
 
 CONSTANTS
 
@@ -656,7 +709,10 @@ func EncodeDate(date calendar.Date) ([]byte, error)
 package business // import "github.com/faustbrian/go-calendar/v2/business"
 
 Package business provides immutable, versioned, and bounded business calendars
-supplied by applications.
+supplied by applications. NewCalendar copies weekend/holiday data; no dataset
+is fetched, authenticated or bundled. Revision/provenance are caller identity,
+not a verified checksum or jurisdiction-wide policy. Searches count civil dates
+visited, not elapsed time, and own no clock, IO or worker lifecycle.
 
 CONSTANTS
 
@@ -694,13 +750,20 @@ type Calendar struct {
 	// Has unexported fields.
 }
     Calendar is an immutable weekend and holiday policy with revision identity.
-    It is safe for concurrent reads after construction.
+    It is safe for concurrent reads after construction. The zero calendar
+    admits no business dates; predicates return false, counts can return zero,
+    and zero movement can return its valid input. Positive searches cannot admit
+    a date and fail on budget or civil-range exhaustion, not ErrInvalidCalendar.
 
 func NewCalendar(config Config) (Calendar, error)
     NewCalendar validates and deeply copies config.
 
 func (c Calendar) AddBusinessDays(d calendar.Date, count, searchLimit int) (calendar.Date, error)
     AddBusinessDays moves by count admitted dates, excluding the starting date.
+    Negative count searches backward; searchLimit counts all civil dates
+    visited, including closures. No partial date is returned on exhaustion.
+    Zero count returns valid d after validating the positive budget, even for a
+    zero Calendar.
 
 func (c Calendar) CountBusinessDays(start, end calendar.Date, searchLimit int) (int, error)
     CountBusinessDays counts admitted dates in the half-open range [start,end).
@@ -734,10 +797,13 @@ func (c Calendar) Revision() string
     Revision returns the application-supplied version identity.
 
 type Config struct {
+	// Revision is a required nonempty UTF-8 identity of at most 128 bytes.
 	Revision string
 	// Weekends contains at most MaxWeekends entries; duplicates are permitted.
-	Weekends   []time.Weekday
-	Holidays   []Holiday
+	Weekends []time.Weekday
+	// Holidays is copied, preserves same-date overlaps, and has at most MaxHolidays entries.
+	Holidays []Holiday
+	// Provenance is copied after UTF-8/length checks; empty fields remain permitted.
 	Provenance Provenance
 }
     Config constructs an immutable Calendar.
@@ -754,7 +820,12 @@ func NewHoliday(date calendar.Date, name string, metadata map[string]string) (Ho
     NewHoliday validates and copies holiday data.
 
 func Observe(source []Holiday, policy Observance) ([]Holiday, error)
-    Observe returns source holidays plus separately marked observed entries.
+    Observe copies effective source data and appends separately marked entries
+    for weekend observance; it does not use a Calendar's configured weekends
+    or resolve collisions. Existing observed/source flags are reset on input
+    copies, so this is not idempotent on its previous output. The appended
+    observance label can fail the name bound; expanded entry count is checked
+    after copying. Errors return no partial result.
 
 func (h Holiday) Date() calendar.Date
     Date returns the holiday's effective date.
@@ -775,7 +846,7 @@ type Observance uint8
     Observance selects an explicit source-to-observed-date policy.
 
 const (
-	// NoObservance leaves source holidays unchanged.
+	// NoObservance keeps effective dates unchanged; copies reset prior observance metadata.
 	NoObservance Observance = iota + 1
 	// NextWeekday moves Saturday and Sunday holidays to the following Monday.
 	NextWeekday
@@ -783,17 +854,24 @@ const (
 	NearestWeekday
 )
 type Provenance struct {
-	Provider         string
-	Source           string
-	License          string
+	// Provider is optional caller-supplied origin identity, not authenticated.
+	Provider string
+	// Source is optional origin text; no URL parsing or fetching is performed.
+	Source string
+	// License is caller-supplied licensing text, not a verified legal conclusion.
+	License string
+	// EffectiveVersion is an optional dataset identity independent of module version.
 	EffectiveVersion string
-	Checksum         string
+	// Checksum is optional caller-supplied text; no digest is computed or verified.
+	Checksum string
 }
     Provenance records optional origin and licensing data for supplied datasets.
 
 package calendarclock // import "github.com/faustbrian/go-calendar/v2/calendarclock"
 
-Package calendarclock adapts a narrow wall-clock source to civil dates.
+Package calendarclock adapts a caller-owned wall-clock source to civil dates.
+Today performs one synchronous call and owns no cancellation or clock lifecycle.
+Supply an explicit non-nil location and a bounded usable clock implementation.
 
 Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/clock. This
 package remains supported for the longer of 180 days after successor public
@@ -808,12 +886,16 @@ var ErrClockRequired = adapter.ErrClockRequired
 FUNCTIONS
 
 func Today(clock Clock, location *time.Location) (calendar.Date, error)
-    Today obtains the civil date observed in an explicit location.
+    Today calls Now once, then extracts civil components in an explicit
+    location. Nil clock interfaces fail; typed-nil/custom callback behavior is
+    not recovered. A nil location is rejected after the clock call. No deadline
+    is imposed.
 
 
 TYPES
 
 type Clock interface {
+	// Now returns a bounded synchronous instant; caller owns concurrency and panic behavior.
 	Now() time.Time
 }
     Clock is the exact wall-clock capability provided by clock.Clock.
@@ -821,6 +903,9 @@ type Clock interface {
 package calendarconfig // import "github.com/faustbrian/go-calendar/v2/calendarconfig"
 
 Package calendarconfig provides strict config-compatible civil values.
+NewDate wraps without validation; decoding replaces a receiver only on success.
+Mutating receivers need exclusive ownership. No config registry, global state,
+IO or lifecycle is introduced.
 
 Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/config.
 This package remains supported for the longer of 180 days after successor public
@@ -843,7 +928,8 @@ func (d Date) MarshalText() ([]byte, error)
     MarshalText returns the canonical configuration value.
 
 func (d *Date) UnmarshalConfigValue(value any) error
-    UnmarshalConfigValue accepts only a canonical date string.
+    UnmarshalConfigValue accepts only a canonical string and preserves the
+    receiver on failure; nil receivers are rejected.
 
 func (d *Date) UnmarshalText(text []byte) error
     UnmarshalText decodes a canonical configuration value.
@@ -851,7 +937,10 @@ func (d *Date) UnmarshalText(text []byte) error
 package calendartemporal // import "github.com/faustbrian/go-calendar/v2/calendartemporal"
 
 Package calendartemporal converts civil boundaries into values suitable for
-temporal without adding interval algebra to calendar core.
+temporal without adding interval algebra to calendar core. Sequence owns
+returned dates and admits its inclusive count before allocation. Instant
+boundaries require explicit location/policy; the next day after an inclusive end
+must be representable. No scheduler or interval lifecycle is owned.
 
 Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/temporal.
 This package remains supported for the longer of 180 days after successor public
@@ -882,6 +971,8 @@ type InstantRange struct {
 func InclusiveDates(first, last calendar.Date, location *time.Location, policy calendartz.Resolution) (InstantRange, error)
     InclusiveDates converts inclusive civil endpoints to an exclusive instant
     range. Its boundaries can be passed directly to temporal/instant.Range.
+    Both midnights must resolve; the maximum supported last date is rejected
+    rather than fabricating an exclusive endpoint outside the civil range.
 
 func (r InstantRange) End() time.Time
     End returns the exclusive instant boundary.
@@ -895,7 +986,9 @@ func (r InstantRange) Start() time.Time
 package calendartest // import "github.com/faustbrian/go-calendar/v2/calendartest"
 
 Package calendartest provides deterministic fixtures and assertions for
-applications that consume calendar.
+applications that consume calendar. Corpus construction allocates fresh entries,
+not generated source; runtime tzdata still controls resolution. Assertions call
+testing.TB directly and own no database or worker lifecycle.
 
 FUNCTIONS
 
@@ -911,19 +1004,28 @@ func VerifyTransition(tb testing.TB, vector TransitionVector)
 
 TYPES
 
-type FixedClock struct{ Instant time.Time }
+type FixedClock struct {
+	// Instant is the returned value; concurrent callers must not mutate this field.
+	Instant time.Time
+}
     FixedClock implements the narrow clock capability used by calendarclock.
 
 func (c FixedClock) Now() time.Time
     Now returns the configured instant.
 
 type TransitionVector struct {
-	Name       string
-	Zone       string
-	Local      calendartz.LocalDateTime
-	Policy     calendartz.Resolution
+	// Name identifies the maintained case in test diagnostics.
+	Name string
+	// Zone is loaded using runtime tzdata; aliases are intentional corpus inputs.
+	Zone string
+	// Local is the civil wall value, independent of the zone/offset.
+	Local calendartz.LocalDateTime
+	// Policy is the explicit gap/fold or offset-match selection.
+	Policy calendartz.Resolution
+	// WantOffset is seconds east of UTC, checked only on successful resolution.
 	WantOffset int
-	WantError  error
+	// WantError is matched with errors.Is; nil selects the successful offset assertion.
+	WantError error
 }
     TransitionVector describes one deterministic local-time conversion case.
 
@@ -933,8 +1035,11 @@ func TransitionVectors() []TransitionVector
 
 package calendarvalidation // import "github.com/faustbrian/go-calendar/v2/calendarvalidation"
 
-Package calendarvalidation provides dependency-neutral rules that can be wrapped
-by validation ValidatorFunc without coupling calendar core to it.
+Package calendarvalidation provides dependency-neutral rules that can be
+wrapped by validation ValidatorFunc without coupling calendar core to it.
+Built-in closures retain copied bounds and are concurrent-safe; arbitrary caller
+Rules own their mutation, panic and blocking behavior. No validation registry,
+IO, context deadline or worker lifecycle is introduced.
 
 Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/validation.
 This package remains supported for the longer of 180 days after successor public
@@ -963,6 +1068,10 @@ func ValidDate() Rule
 package calendarwire // import "github.com/faustbrian/go-calendar/v2/calendarwire"
 
 Package calendarwire provides bounded canonical wire helpers for Date.
+EncodeDate returns owned bytes. DecodeDate borrows input only during its call
+and accepts exactly the 12-byte unescaped JSON date string, not the broader
+generic Date JSON grammar. Version is external contract metadata, not an
+envelope byte; upstream payload acquisition/decompression remains caller-owned.
 
 Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/wire. This package
 remains supported for the longer of 180 days after successor public availability
@@ -996,8 +1105,9 @@ func EncodeDate(date calendar.Date) ([]byte, error)
 package postgres // import "github.com/faustbrian/go-calendar/v2/postgres"
 
 Package postgres provides database/sql and pgx adapters for PostgreSQL date.
-Ordinary Date rejects NULL and infinity; InfinityDate models those sentinels
-explicitly when an application needs them.
+Date rejects NULL/infinity; InfinityDate models infinities but rejects NULL.
+Mutable Scan receivers require exclusive ownership. No connection, query,
+migration, transaction or database lifecycle is owned by these codecs.
 
 Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/postgres.
 This package remains supported for the longer of 180 days after successor public
@@ -1030,10 +1140,13 @@ func (d Date) DateValue() (pgtype.Date, error)
     DateValue implements pgtype.DateValuer.
 
 func (d *Date) Scan(source any) error
-    Scan implements database/sql.Scanner.
+    Scan accepts canonical text/bytes or time.Time civil components. It rejects
+    NULL, unsupported types and infinity for ordinary Date. Nil receivers fail;
+    errors preserve the receiver and no implicit timezone conversion is applied.
 
 func (d *Date) ScanDate(value pgtype.Date) error
-    ScanDate implements pgtype.DateScanner.
+    ScanDate rejects invalid/null/infinite pgx values and preserves the receiver
+    on failure. Finite time components are taken in their supplied location.
 
 func (d Date) Value() (driver.Value, error)
     Value implements database/sql/driver.Valuer using canonical date text.
@@ -1082,8 +1195,13 @@ const (
 )
 package timezone // import "github.com/faustbrian/go-calendar/v2/timezone"
 
-Package timezone converts between civil local values and instants using explicit
-IANA locations and deterministic gap/fold policies.
+Package timezone converts between civil local values and instants using
+explicit locations and deterministic gap/fold policies. Use LoadLocation and
+Resolve/FromInstant; no timezone database is bundled or updated here. Runtime
+tzdata (and an explicitly requested Local location) remains deployment-owned.
+Values/locations support concurrent reads; no worker, IO deadline or location
+lifecycle is owned. Resolution samples nearby offsets, not an exhaustive
+transition proof for every arbitrary caller-created location.
 
 CONSTANTS
 
@@ -1112,16 +1230,26 @@ FUNCTIONS
 
 func DayRange(date calendar.Date, loc *time.Location, policy Resolution) (start, end time.Time, err error)
     DayRange returns the half-open instant range [start, next-day-start) for a
-    civil date. It never fabricates an end-of-day local value.
+    civil date. It never fabricates an end-of-day local value. Both midnights
+    must resolve under the same policy; skipped/ambiguous midnight can fail
+    and the maximum supported date fails because its next civil day is not
+    representable.
 
 func LoadLocation(name string) (*time.Location, error)
     LoadLocation validates a bounded IANA name before delegating transition
-    calculation to the standard library's authoritative timezone loader.
+    calculation to time.LoadLocation. UTC/Local special names are accepted;
+    Local can depend on process environment. Loader causes are replaced by
+    ErrInvalidZone without exposing input. Admission bounds name bytes,
+    not database-loader work.
 
 func Resolve(local LocalDateTime, loc *time.Location, policy Resolution) (time.Time, error)
     Resolve maps local to an instant in loc according to policy. It enumerates
     verified occurrences instead of accepting time.Date's implicit gap/fold
-    choice. Work is bounded to 145 location lookups and candidate checks.
+    choice. It samples 145 hourly offsets across ±72h around UTC wall
+    components, then verifies at most one candidate per distinct sampled offset.
+    Gaps fail under every policy; MatchOffset applies even to an unambiguous
+    occurrence. This is bounded enumeration work, not a total loader/heap/time
+    guarantee.
 
 
 TYPES
@@ -1173,7 +1301,10 @@ func (l LocalDateTime) Second() int
 type Resolution interface {
 	// Has unexported methods.
 }
-    Resolution is a sealed local-time resolution policy.
+    Resolution selects the built-in Choice or MatchOffset policies. Use these
+    values directly; unknown promoted implementations are rejected when
+    inspected, and typed-nil pointers may panic when invoking the private marker
+    method.
 
 func MatchOffset(offsetSeconds int) Resolution
     MatchOffset selects the fold occurrence with offsetSeconds east of UTC.

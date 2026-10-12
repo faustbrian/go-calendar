@@ -1,5 +1,8 @@
 // Package calendarvalidation provides dependency-neutral rules that can be
 // wrapped by validation ValidatorFunc without coupling calendar core to it.
+// Built-in closures retain copied bounds and are concurrent-safe; arbitrary
+// caller Rules own their mutation, panic and blocking behavior. No validation
+// registry, IO, context deadline or worker lifecycle is introduced.
 //
 // Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/validation. This
 // package remains supported for the longer of 180 days after successor public

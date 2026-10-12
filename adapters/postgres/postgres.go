@@ -1,6 +1,8 @@
 // Package calendarpostgres provides database/sql and pgx adapters for
-// PostgreSQL date. Ordinary Date rejects NULL and infinity; InfinityDate
-// models those sentinels explicitly when an application needs them.
+// PostgreSQL date. Date rejects NULL/infinity; InfinityDate models infinities
+// but also rejects NULL. Scan receivers require exclusive mutable ownership;
+// concurrent read-only encoding uses immutable values. This package owns no
+// connection, query, migration, transaction or database lifecycle.
 package calendarpostgres
 
 import (
@@ -37,7 +39,9 @@ func (d Date) Value() (driver.Value, error) {
 	return d.date.String(), nil
 }
 
-// Scan implements database/sql.Scanner.
+// Scan accepts canonical text/bytes or time.Time civil components. It rejects
+// NULL, unsupported types and infinity for ordinary Date. Nil receivers fail;
+// errors preserve the receiver and no implicit timezone conversion is applied.
 func (d *Date) Scan(source any) error {
 	if d == nil {
 		return calendar.ErrInvalidDate
@@ -58,7 +62,8 @@ func (d Date) DateValue() (pgtype.Date, error) {
 	return pgtype.Date{Time: time.Date(d.date.Year(), d.date.Month(), d.date.Day(), 0, 0, 0, 0, time.UTC), Valid: true}, nil
 }
 
-// ScanDate implements pgtype.DateScanner.
+// ScanDate rejects invalid/null/infinite pgx values and preserves the receiver
+// on failure. Finite time components are taken in their supplied location.
 func (d *Date) ScanDate(value pgtype.Date) error {
 	if d == nil {
 		return calendar.ErrInvalidDate

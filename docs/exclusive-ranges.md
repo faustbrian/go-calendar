@@ -7,3 +7,7 @@ elapsed length and local wall times can be skipped or repeated.
 date, returning `[start,end)`. `calendartemporal.InclusiveDates` converts
 inclusive civil endpoints to the same exclusive instant form suitable for
 `temporal/instant.Range`.
+
+Both endpoint midnights must resolve under the chosen policy; there is no
+implicit midnight-gap normalization. A range ending at the maximum civil date
+cannot manufacture the following exclusive date and returns an error.

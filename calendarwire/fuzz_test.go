@@ -6,6 +6,7 @@ import (
 	"github.com/faustbrian/go-calendar/v2/calendarwire"
 )
 
+// FuzzDecodeDate checks successful bounded wire decoding re-encodes to identical bytes.
 func FuzzDecodeDate(f *testing.F) {
 	for _, seed := range [][]byte{[]byte(`"2024-02-29"`), []byte("null"), []byte(`"bad"`), {0xff}} {
 		f.Add(seed)

@@ -1,4 +1,7 @@
 // Package calendarconfig provides strict config-compatible civil values.
+// NewDate wraps without validation; decoding replaces a receiver only on
+// success. Mutating receivers need exclusive ownership. No config registry,
+// global state, IO or lifecycle is introduced.
 package calendarconfig
 
 import (
@@ -16,7 +19,8 @@ func NewDate(date calendar.Date) Date { return Date{date: date} }
 // CalendarDate returns the decoded civil date.
 func (d Date) CalendarDate() calendar.Date { return d.date }
 
-// UnmarshalConfigValue accepts only a canonical date string.
+// UnmarshalConfigValue accepts only a canonical string and preserves the
+// receiver on failure; nil receivers are rejected.
 func (d *Date) UnmarshalConfigValue(value any) error {
 	if d == nil {
 		return calendar.ErrInvalidDate

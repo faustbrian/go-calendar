@@ -1,5 +1,8 @@
 // Package business provides immutable, versioned, and bounded business
-// calendars supplied by applications.
+// calendars supplied by applications. NewCalendar copies weekend/holiday data;
+// no dataset is fetched, authenticated or bundled. Revision/provenance are caller
+// identity, not a verified checksum or jurisdiction-wide policy. Searches count
+// civil dates visited, not elapsed time, and own no clock, IO or worker lifecycle.
 package business
 
 import (
@@ -95,24 +98,35 @@ func (h Holiday) SourceDate() (calendar.Date, bool) { return h.sourceDate, h.obs
 
 // Provenance records optional origin and licensing data for supplied datasets.
 type Provenance struct {
-	Provider         string
-	Source           string
-	License          string
+	// Provider is optional caller-supplied origin identity, not authenticated.
+	Provider string
+	// Source is optional origin text; no URL parsing or fetching is performed.
+	Source string
+	// License is caller-supplied licensing text, not a verified legal conclusion.
+	License string
+	// EffectiveVersion is an optional dataset identity independent of module version.
 	EffectiveVersion string
-	Checksum         string
+	// Checksum is optional caller-supplied text; no digest is computed or verified.
+	Checksum string
 }
 
 // Config constructs an immutable Calendar.
 type Config struct {
+	// Revision is a required nonempty UTF-8 identity of at most 128 bytes.
 	Revision string
 	// Weekends contains at most MaxWeekends entries; duplicates are permitted.
-	Weekends   []time.Weekday
-	Holidays   []Holiday
+	Weekends []time.Weekday
+	// Holidays is copied, preserves same-date overlaps, and has at most MaxHolidays entries.
+	Holidays []Holiday
+	// Provenance is copied after UTF-8/length checks; empty fields remain permitted.
 	Provenance Provenance
 }
 
 // Calendar is an immutable weekend and holiday policy with revision identity.
-// It is safe for concurrent reads after construction.
+// It is safe for concurrent reads after construction. The zero calendar admits
+// no business dates; predicates return false, counts can return zero, and zero
+// movement can return its valid input. Positive searches cannot admit a date
+// and fail on budget or civil-range exhaustion, not ErrInvalidCalendar.
 type Calendar struct {
 	revision   string
 	weekends   [7]bool
@@ -209,6 +223,9 @@ func (c Calendar) PreviousBusinessDay(d calendar.Date, searchLimit int) (calenda
 }
 
 // AddBusinessDays moves by count admitted dates, excluding the starting date.
+// Negative count searches backward; searchLimit counts all civil dates visited,
+// including closures. No partial date is returned on exhaustion. Zero count
+// returns valid d after validating the positive budget, even for a zero Calendar.
 func (c Calendar) AddBusinessDays(d calendar.Date, count, searchLimit int) (calendar.Date, error) {
 	if !d.IsValid() {
 		return calendar.Date{}, calendar.ErrInvalidDate
@@ -310,7 +327,7 @@ func (c Calendar) search(d calendar.Date, direction, searchLimit int) (calendar.
 type Observance uint8
 
 const (
-	// NoObservance leaves source holidays unchanged.
+	// NoObservance keeps effective dates unchanged; copies reset prior observance metadata.
 	NoObservance Observance = iota + 1
 	// NextWeekday moves Saturday and Sunday holidays to the following Monday.
 	NextWeekday
@@ -318,7 +335,12 @@ const (
 	NearestWeekday
 )
 
-// Observe returns source holidays plus separately marked observed entries.
+// Observe copies effective source data and appends separately marked entries
+// for weekend observance; it does not use a Calendar's configured weekends or
+// resolve collisions. Existing observed/source flags are reset on input copies,
+// so this is not idempotent on its previous output. The appended observance label
+// can fail the name bound; expanded entry count is checked after copying. Errors
+// return no partial result.
 func Observe(source []Holiday, policy Observance) ([]Holiday, error) {
 	if cmp.Compare(len(source), MaxHolidays) == 1 {
 		return nil, ErrResourceLimit
@@ -372,6 +394,8 @@ func Observe(source []Holiday, policy Observance) ([]Holiday, error) {
 	return result, nil
 }
 
+// Admission precedes copying, and every outward metadata view is independent.
+// These limits bound retained fields, not all caller or temporary allocations.
 func cloneMetadata(metadata map[string]string) (map[string]string, error) {
 	if cmp.Compare(len(metadata), MaxMetadataEntries) == 1 {
 		return nil, ErrResourceLimit

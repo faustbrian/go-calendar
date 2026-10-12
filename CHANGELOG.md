@@ -5,6 +5,11 @@ versioning.
 
 ## Unreleased
 
+### Changed
+
+- Clarify civil/week boundaries, observance copying, timezone sampling, mutable
+  decoder ownership and caller-supplied provenance without runtime changes.
+
 ## 2.0.0 - 2026-10-01
 
 ### Changed

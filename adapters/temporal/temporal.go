@@ -1,5 +1,8 @@
 // Package calendartemporal converts civil boundaries into values suitable for
 // temporal without adding interval algebra to calendar core.
+// Sequence owns returned dates and admits its inclusive count before allocation.
+// Instant boundaries require explicit location/policy; the next day after an
+// inclusive end must be representable. No scheduler or interval lifecycle is owned.
 package calendartemporal
 
 import (
@@ -34,6 +37,8 @@ func (r InstantRange) Includes(value time.Time) bool {
 
 // InclusiveDates converts inclusive civil endpoints to an exclusive instant
 // range. Its boundaries can be passed directly to temporal/instant.Range.
+// Both midnights must resolve; the maximum supported last date is rejected
+// rather than fabricating an exclusive endpoint outside the civil range.
 func InclusiveDates(first, last calendar.Date, location *time.Location, policy calendartz.Resolution) (InstantRange, error) {
 	comparison, err := first.Compare(last)
 	if err != nil {

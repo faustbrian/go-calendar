@@ -1,5 +1,11 @@
 // Package calendar provides immutable civil-calendar values and arithmetic.
 // A Date represents a Gregorian calendar day, never an instant or timezone.
+// Values are immutable and concurrent-readable; decoding methods mutate their
+// receiver and require exclusive ownership. Use NewDate/ParseDate, explicit
+// arithmetic policies and explicit locations only at conversion boundaries.
+// Supported years are 0001–9999; boundary helpers can return an invalid Date
+// when a complete week falls outside that range. No clock, IO, locale formatting
+// or goroutine lifecycle is owned by this core.
 package calendar
 
 import (
@@ -57,9 +63,12 @@ type Date struct {
 // first, then months under the caller's policy, then exact calendar days. All
 // non-zero components have the sign of the destination relative to the source.
 type ComponentDifference struct {
-	Years  int
+	// Years is the first signed calendar movement under the selected policy.
+	Years int
+	// Months is applied after Years under the same policy, not as elapsed duration.
 	Months int
-	Days   int
+	// Days is the exact civil remainder after year/month movements.
+	Days int
 }
 
 // NewDate validates and constructs a Date.
@@ -163,7 +172,7 @@ func (d Date) DaysInMonth() int {
 	return daysInMonth(d.Year(), d.Month())
 }
 
-// Weekday returns d's weekday. It returns time.Sunday for an invalid Date;
+// Weekday returns d's weekday. It returns time.Monday for an invalid Date;
 // callers that may hold a zero value should check IsValid first.
 func (d Date) Weekday() time.Weekday { return d.asTime().Weekday() }
 
@@ -206,7 +215,9 @@ func (d Date) AddWeeks(weeks int) (Date, error) {
 	return d.AddDays(days)
 }
 
-// AddMonths adds calendar months using policy.
+// AddMonths adds calendar months using policy. Clamp uses the target month end,
+// Reject requires the original day, and Overflow carries excess days forward
+// from the target month even for a negative month movement.
 func (d Date) AddMonths(months int, policy ArithmeticPolicy) (Date, error) {
 	if !d.IsValid() {
 		return Date{}, ErrInvalidDate
@@ -318,7 +329,9 @@ func (d Date) SubYears(years int, policy ArithmeticPolicy) (Date, error) {
 }
 
 // ComponentsUntil decomposes the movement from d to other into years, months,
-// and days using the caller's explicit month/year arithmetic policy.
+// and days using the caller's explicit month/year arithmetic policy. Equal
+// valid dates return zero components before checking policy. Reject can fail
+// on an intermediate anniversary/month rather than seeking another decomposition.
 func (d Date) ComponentsUntil(other Date, policy ArithmeticPolicy) (ComponentDifference, error) {
 	comparison, err := d.Compare(other)
 	if err != nil {
@@ -398,7 +411,8 @@ func (d Date) DaysUntil(other Date) int {
 	return dayOrdinal(other) - dayOrdinal(d)
 }
 
-// MarshalText implements encoding.TextMarshaler.
+// MarshalText returns owned canonical bytes or ErrInvalidDate; no locale data
+// or instant conversion is used.
 func (d Date) MarshalText() ([]byte, error) {
 	if !d.IsValid() {
 		return nil, ErrInvalidDate
@@ -406,7 +420,8 @@ func (d Date) MarshalText() ([]byte, error) {
 	return []byte(d.String()), nil
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler.
+// UnmarshalText admits exactly ten canonical bytes, then replaces the receiver.
+// Nil receivers fail and rejected input leaves the receiver unchanged.
 func (d *Date) UnmarshalText(text []byte) error {
 	if d == nil {
 		return ErrInvalidDate
@@ -485,6 +500,8 @@ func checkedNegate(value int) (int, bool) {
 	return -value, true
 }
 
+// Ordinals cover the full supported range without time.Duration saturation;
+// the proleptic Gregorian leap rule is applied even before historical adoption.
 func dayOrdinal(date Date) int {
 	year := date.Year() - 1
 	return year*365 + year/4 - year/100 + year/400 + date.DayOfYear() - 1

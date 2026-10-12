@@ -25,7 +25,8 @@ func (p WeekPolicy) IsValid() bool {
 // WeekStart returns the configured first weekday.
 func (p WeekPolicy) WeekStart() time.Weekday { return p.start }
 
-// StartOfWeek returns the first date of d's policy-defined week.
+// StartOfWeek returns the first date of d's policy-defined week. Invalid
+// operands or an unrepresentable boundary return an invalid Date, not a clip.
 func (p WeekPolicy) StartOfWeek(d Date) Date {
 	if !p.IsValid() || !d.IsValid() {
 		return Date{}
@@ -35,7 +36,8 @@ func (p WeekPolicy) StartOfWeek(d Date) Date {
 	return start
 }
 
-// EndOfWeek returns the final date of d's policy-defined week.
+// EndOfWeek returns the final date of d's policy-defined week, or an invalid
+// Date if the complete boundary is outside the supported civil range.
 func (p WeekPolicy) EndOfWeek(d Date) Date {
 	end, _ := p.StartOfWeek(d).AddDays(6)
 	return end

@@ -1,4 +1,7 @@
 // Package calendarconfig provides strict config-compatible civil values.
+// NewDate wraps without validation; decoding replaces a receiver only on
+// success. Mutating receivers need exclusive ownership. No config registry,
+// global state, IO or lifecycle is introduced.
 //
 // Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/config. This
 // package remains supported for the longer of 180 days after successor public
@@ -20,7 +23,8 @@ func NewDate(date calendar.Date) Date { return Date{value: adapter.NewDate(date)
 // CalendarDate returns the decoded civil date.
 func (d Date) CalendarDate() calendar.Date { return d.value.CalendarDate() }
 
-// UnmarshalConfigValue accepts only a canonical date string.
+// UnmarshalConfigValue accepts only a canonical string and preserves the
+// receiver on failure; nil receivers are rejected.
 func (d *Date) UnmarshalConfigValue(value any) error {
 	if d == nil {
 		return calendar.ErrInvalidDate

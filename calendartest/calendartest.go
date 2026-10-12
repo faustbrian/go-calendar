@@ -1,5 +1,7 @@
 // Package calendartest provides deterministic fixtures and assertions for
-// applications that consume calendar.
+// applications that consume calendar. Corpus construction allocates fresh
+// entries, not generated source; runtime tzdata still controls resolution.
+// Assertions call testing.TB directly and own no database or worker lifecycle.
 package calendartest
 
 import (
@@ -12,7 +14,10 @@ import (
 )
 
 // FixedClock implements the narrow clock capability used by calendarclock.
-type FixedClock struct{ Instant time.Time }
+type FixedClock struct {
+	// Instant is the returned value; concurrent callers must not mutate this field.
+	Instant time.Time
+}
 
 // Now returns the configured instant.
 func (c FixedClock) Now() time.Time { return c.Instant }
@@ -37,12 +42,18 @@ func MustLocation(tb testing.TB, name string) *time.Location {
 
 // TransitionVector describes one deterministic local-time conversion case.
 type TransitionVector struct {
-	Name       string
-	Zone       string
-	Local      calendartz.LocalDateTime
-	Policy     calendartz.Resolution
+	// Name identifies the maintained case in test diagnostics.
+	Name string
+	// Zone is loaded using runtime tzdata; aliases are intentional corpus inputs.
+	Zone string
+	// Local is the civil wall value, independent of the zone/offset.
+	Local calendartz.LocalDateTime
+	// Policy is the explicit gap/fold or offset-match selection.
+	Policy calendartz.Resolution
+	// WantOffset is seconds east of UTC, checked only on successful resolution.
 	WantOffset int
-	WantError  error
+	// WantError is matched with errors.Is; nil selects the successful offset assertion.
+	WantError error
 }
 
 // TransitionVectors returns a fresh corpus covering representative IANA

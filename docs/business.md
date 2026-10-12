@@ -5,12 +5,19 @@ inputs. A country code is never treated as a complete calendar identity.
 
 Holiday names, metadata, provenance, and total entries are bounded. Overlapping
 holidays remain separate. Observance never overwrites a source date: generated
-entries carry `SourceDate` and `IsObserved`.
+entries carry `SourceDate` and `IsObserved`. Observe rebuilds its input entries
+from effective date/name/metadata and resets any prior observed flags/source
+links; repeated observation is not idempotent. It does not resolve holiday
+collisions or use a configured Calendar weekend policy. The observed-name
+suffix can exceed the name bound; output count is checked after copying.
 
 `NextBusinessDay`, `PreviousBusinessDay`, `AddBusinessDays`, and
 `CountBusinessDays` require explicit positive work limits. A seven-day weekend
 or long closure therefore returns `ErrSearchLimit` instead of looping. The zero
-calendar fails closed.
+calendar admits no business dates: predicates are false and counts can be
+zero without error, while positive searches fail on budget or civil-range
+exhaustion. Zero-count AddBusinessDays can return its valid input even on a zero
+Calendar.
 
 Cutoffs, opening hours, settlement rules, and carrier schedules are intentionally
 outside this package.
@@ -32,8 +39,10 @@ appropriate operational budget.
 
 No holiday dataset is bundled, so there is no repository-owned checksum or
 generated dataset whose provenance can drift. Applications must persist the
-calendar revision and supplied provenance beside derived decisions. A checksum
-identifies exact source bytes; the revision identifies the application's
+calendar revision and supplied provenance beside derived decisions. Runtime
+provenance admission checks lengths/UTF-8, not source identity, URL, licensing
+or checksum authenticity. A checksum identifies exact source bytes; the
+revision identifies the application's
 interpretation, including weekends and observance policy.
 
 Any future separately shipped dataset must be generated deterministically from

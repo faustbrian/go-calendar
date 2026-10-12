@@ -28,8 +28,9 @@
 - `Holiday` deep-copies bounded metadata and retains observed source dates.
 - `Calendar` deep-copies configuration, requires revision identity, fails
   closed when zero, and supports bounded business-day navigation/counting.
-- `Observe` retains source holidays and appends separately marked observed
-  entries under `NoObservance`, `NextWeekday`, or `NearestWeekday`.
+- `Observe` copies effective input holiday data and appends separately marked
+  observed entries under `NoObservance`, `NextWeekday`, or `NearestWeekday`. Existing
+  observance flags/source links on input are reset; this is not idempotent.
 
 ## Persistence and adapters
 
@@ -44,6 +45,6 @@
   within v2. Their v1 identities are not interchangeable with v2 values.
 - `calendartest` provides clocks, assertions, locations, and transition vectors.
 
-The generated, compiler-derived public API snapshot is
+The generated full GoDoc API snapshot is
 [api/calendar-v2.txt](../api/calendar-v2.txt). The unchanged
 [v1 baseline](../api/baseline.txt) is historical, not the active candidate API.

@@ -8,6 +8,8 @@ import (
 	calendartz "github.com/faustbrian/go-calendar/v2/timezone"
 )
 
+// FuzzLoadLocation checks bounded hostile names and identity of admitted loader
+// results.
 func FuzzLoadLocation(f *testing.F) {
 	for _, seed := range []string{"UTC", "America/New_York", "Pacific/Apia", "../UTC", string([]byte{0xff})} {
 		f.Add(seed)
@@ -20,6 +22,8 @@ func FuzzLoadLocation(f *testing.F) {
 	})
 }
 
+// FuzzResolveLocalDateTime checks successful local resolution round-trips in four fixed
+// runtime zones.
 func FuzzResolveLocalDateTime(f *testing.F) {
 	f.Add(2024, 11, 3, 1, 30, 0, 0, uint8(2), uint8(calendartz.Earlier))
 	zones := []string{"UTC", "America/New_York", "Europe/Helsinki", "Pacific/Apia"}

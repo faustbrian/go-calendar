@@ -8,6 +8,8 @@ import (
 	calendar "github.com/faustbrian/go-calendar/v2"
 )
 
+// FuzzParseDate checks successful hostile-string admission preserves canonical text
+// round-trip.
 func FuzzParseDate(f *testing.F) {
 	for _, seed := range []string{"2024-02-29", "0001-01-01", "9999-12-31", "2024-02-30", "", string([]byte{0xff})} {
 		f.Add(seed)
@@ -27,6 +29,8 @@ func FuzzParseDate(f *testing.F) {
 	})
 }
 
+// FuzzTypedCalendarParsers checks successful year/month/quarter/semester/week parses
+// preserve exact grammar.
 func FuzzTypedCalendarParsers(f *testing.F) {
 	for _, seed := range []string{
 		"2024",
@@ -57,6 +61,8 @@ func FuzzTypedCalendarParsers(f *testing.F) {
 	})
 }
 
+// FuzzDateArithmeticNeverPanics checks valid inputs remain valid after admitted
+// movement and preserved-day inversion.
 func FuzzDateArithmeticNeverPanics(f *testing.F) {
 	f.Add(2024, 2, 29, 1, uint8(calendar.Clamp))
 	f.Add(9999, 12, 31, int(^uint(0)>>1), uint8(calendar.Overflow))

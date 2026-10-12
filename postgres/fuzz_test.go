@@ -6,6 +6,7 @@ import (
 	calendarpg "github.com/faustbrian/go-calendar/v2/postgres"
 )
 
+// FuzzDateScan checks hostile finite/infinity strings preserve admitted SQL round-trip.
 func FuzzDateScan(f *testing.F) {
 	for _, seed := range []string{"2024-02-29", "infinity", "-infinity", "bad", string([]byte{0xff})} {
 		f.Add(seed)

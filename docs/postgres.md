@@ -7,7 +7,10 @@ implements `database/sql.Scanner`, `driver.Valuer`, `pgtype.DateScanner`, and
 
 Use `calendarpostgres.InfinityDate` only when the schema intentionally admits
 `-infinity` or `infinity`. Those sentinels are never coerced to ordinary civil
-dates. Native pgx text/binary codecs and a live PostgreSQL round trip are tested.
+dates; InfinityDate still rejects NULL. Scans preserve the receiver on error
+and require exclusive mutation ownership. Finite time.Time/pgx inputs use civil
+components in their supplied location, without automatic UTC conversion.
+Native pgx text/binary codecs and a live PostgreSQL round trip are tested.
 
 `golib check --module .` starts a task-owned PostgreSQL fixture and runs the
 tagged integration suite. CI runs the same contract against the pinned service

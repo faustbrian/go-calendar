@@ -19,5 +19,8 @@ may omit outer whitespace from that callback. Applications must bound that
 outer buffer at acquisition; this method cannot preempt an upstream decoder.
 
 `calendarwire.Version == 1` identifies this stable canonical contract and its
-decoder caps input at 64 bytes. Locale-aware display belongs in a presentation
-adapter; never use localized display text as a wire value.
+decoder caps input at 64 bytes and requires exactly the unescaped 12-byte
+quoted-date token: whitespace and escapes accepted by generic Date JSON are
+not accepted by this canonical wire helper. Version is external contract
+metadata, not a byte added to encoded output. Locale-aware display belongs in
+a presentation adapter; never use localized display text as a wire value.

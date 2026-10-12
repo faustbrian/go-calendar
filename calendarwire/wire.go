@@ -1,4 +1,8 @@
 // Package calendarwire provides bounded canonical wire helpers for Date.
+// EncodeDate returns owned bytes. DecodeDate borrows input only during its call
+// and accepts exactly the 12-byte unescaped JSON date string, not the broader
+// generic Date JSON grammar. Version is external contract metadata, not an
+// envelope byte; upstream payload acquisition/decompression remains caller-owned.
 //
 // Deprecated: use github.com/faustbrian/go-calendar/v2/adapters/wire. This package
 // remains supported for the longer of 180 days after successor public

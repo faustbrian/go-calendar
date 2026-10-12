@@ -1,5 +1,8 @@
 // Package calendarvalidation provides dependency-neutral rules that can be
 // wrapped by validation ValidatorFunc without coupling calendar core to it.
+// Built-in closures retain copied bounds and are concurrent-safe; arbitrary
+// caller Rules own their mutation, panic and blocking behavior. No validation
+// registry, IO, context deadline or worker lifecycle is introduced.
 package calendarvalidation
 
 import (

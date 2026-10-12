@@ -1,5 +1,10 @@
 // Package timezone converts between civil local values and instants using
-// explicit IANA locations and deterministic gap/fold policies.
+// explicit locations and deterministic gap/fold policies. Use LoadLocation and
+// Resolve/FromInstant; no timezone database is bundled or updated here. Runtime
+// tzdata (and an explicitly requested Local location) remains deployment-owned.
+// Values/locations support concurrent reads; no worker, IO deadline or location
+// lifecycle is owned. Resolution samples nearby offsets, not an exhaustive
+// transition proof for every arbitrary caller-created location.
 package timezone
 
 import (
@@ -33,7 +38,9 @@ var (
 // MaxZoneNameBytes bounds IANA timezone identifiers before database lookup.
 const MaxZoneNameBytes = 255
 
-// Resolution is a sealed local-time resolution policy.
+// Resolution selects the built-in Choice or MatchOffset policies. Use these
+// values directly; unknown promoted implementations are rejected when inspected,
+// and typed-nil pointers may panic when invoking the private marker method.
 type Resolution interface{ resolution() }
 
 // Choice selects behavior for ordinary, ambiguous, and nonexistent local time.
@@ -58,7 +65,9 @@ func (offsetMatch) resolution() {}
 func MatchOffset(offsetSeconds int) Resolution { return offsetMatch{seconds: offsetSeconds} }
 
 // LoadLocation validates a bounded IANA name before delegating transition
-// calculation to the standard library's authoritative timezone loader.
+// calculation to time.LoadLocation. UTC/Local special names are accepted; Local
+// can depend on process environment. Loader causes are replaced by ErrInvalidZone
+// without exposing input. Admission bounds name bytes, not database-loader work.
 func LoadLocation(name string) (*time.Location, error) {
 	return loadLocation(name, time.LoadLocation)
 }
@@ -137,7 +146,10 @@ func (l LocalDateTime) IsValid() bool {
 
 // Resolve maps local to an instant in loc according to policy. It enumerates
 // verified occurrences instead of accepting time.Date's implicit gap/fold
-// choice. Work is bounded to 145 location lookups and candidate checks.
+// choice. It samples 145 hourly offsets across ±72h around UTC wall components,
+// then verifies at most one candidate per distinct sampled offset. Gaps fail
+// under every policy; MatchOffset applies even to an unambiguous occurrence.
+// This is bounded enumeration work, not a total loader/heap/time guarantee.
 func Resolve(local LocalDateTime, loc *time.Location, policy Resolution) (time.Time, error) {
 	if !local.IsValid() {
 		return time.Time{}, ErrInvalidLocalTime
@@ -195,7 +207,9 @@ func FromInstant(instant time.Time, loc *time.Location) (LocalDateTime, error) {
 }
 
 // DayRange returns the half-open instant range [start, next-day-start) for a
-// civil date. It never fabricates an end-of-day local value.
+// civil date. It never fabricates an end-of-day local value. Both midnights must
+// resolve under the same policy; skipped/ambiguous midnight can fail and the
+// maximum supported date fails because its next civil day is not representable.
 func DayRange(date calendar.Date, loc *time.Location, policy Resolution) (start, end time.Time, err error) {
 	if !date.IsValid() {
 		return time.Time{}, time.Time{}, calendar.ErrInvalidDate
@@ -215,6 +229,9 @@ func DayRange(date calendar.Date, loc *time.Location, policy Resolution) (start,
 	return start, end, nil
 }
 
+// Round-trip verification rejects implicit gap normalization from time.Date.
+// The horizon/hourly sampling bounds work; it does not traverse every transition
+// or prove completeness for a short-lived offset missing from the samples.
 func occurrences(local LocalDateTime, loc *time.Location) []time.Time {
 	wall := time.Date(local.Date().Year(), local.Date().Month(), local.Date().Day(), local.Hour(), local.Minute(), local.Second(), local.Nanosecond(), time.UTC)
 	offsets := make(map[int]struct{}, 4)

@@ -75,7 +75,8 @@ func (y Year) Contains(d Date) bool {
 	return allTrue(y.IsValid(), d.IsValid(), d.Year() == y.Value())
 }
 
-// Add returns a year offset from y.
+// Add returns a year offset from y, rejecting unsupported results with
+// ErrInvalidDate rather than the Date arithmetic ErrArithmetic classification.
 func (y Year) Add(years int) (Year, error) {
 	if !y.IsValid() {
 		return Year{}, ErrInvalidDate
@@ -367,7 +368,9 @@ func (s Semester) Compare(other Semester) (int, error) {
 	return s.FirstDate().Compare(other.FirstDate())
 }
 
-// ISOWeek is an immutable ISO 8601 week-year and week.
+// ISOWeek is an immutable ISO 8601 week-year and week using Go time.ISOWeek
+// numbering. Validation checks the week number, not representability of every
+// member day: the final Sunday of a valid boundary week can be out of range.
 type ISOWeek struct {
 	year uint16
 	week uint8
@@ -420,7 +423,8 @@ func (w ISOWeek) FirstDate() Date {
 	return first
 }
 
-// LastDate returns Sunday of w.
+// LastDate returns Sunday of w, or an invalid Date when that boundary falls
+// outside years 1–9999 or w is invalid.
 func (w ISOWeek) LastDate() Date {
 	last, _ := w.FirstDate().AddDays(6)
 	return last

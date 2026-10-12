@@ -9,6 +9,8 @@ import (
 	"github.com/faustbrian/go-calendar/v2/business"
 )
 
+// BenchmarkLargeCalendarLookup measures a middle-key lookup in a prebuilt 5000-holiday
+// calendar; setup is excluded.
 func BenchmarkLargeCalendarLookup(b *testing.B) {
 	holidayCount := 5_000
 	holidays := make([]business.Holiday, holidayCount)
@@ -28,6 +30,8 @@ func BenchmarkLargeCalendarLookup(b *testing.B) {
 	}
 }
 
+// BenchmarkAddBusinessDays measures 20 admitted days with a weekend-only policy and
+// 40-date budget.
 func BenchmarkAddBusinessDays(b *testing.B) {
 	cal, _ := business.NewCalendar(business.Config{Revision: "benchmark-v1", Weekends: []time.Weekday{time.Saturday, time.Sunday}})
 	start := calendar.MustDate(2024, time.January, 1)

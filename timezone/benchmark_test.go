@@ -8,6 +8,8 @@ import (
 	calendartz "github.com/faustbrian/go-calendar/v2/timezone"
 )
 
+// BenchmarkResolveLocalDateTime measures earlier-fold resolution in preloaded New York
+// data; zone loading is excluded.
 func BenchmarkResolveLocalDateTime(b *testing.B) {
 	location, err := calendartz.LoadLocation("America/New_York")
 	if err != nil {

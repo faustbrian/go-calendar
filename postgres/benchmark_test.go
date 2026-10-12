@@ -9,6 +9,8 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+// BenchmarkPGXBinaryDateEncode measures native pgx finite-date encoding with map/value
+// construction outside b.Loop.
 func BenchmarkPGXBinaryDateEncode(b *testing.B) {
 	codec := pgtype.NewMap()
 	value := calendarpg.NewDate(calendar.MustDate(2024, time.February, 29))

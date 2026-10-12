@@ -2,7 +2,8 @@ package calendar
 
 import "time"
 
-// StartOfISOWeek returns Monday of d's ISO week.
+// StartOfISOWeek returns Monday of d's ISO week, or an invalid Date when d
+// or the complete week boundary is outside the supported civil range.
 func (d Date) StartOfISOWeek() Date {
 	if !d.IsValid() {
 		return Date{}
@@ -12,7 +13,8 @@ func (d Date) StartOfISOWeek() Date {
 	return start
 }
 
-// EndOfISOWeek returns Sunday of d's ISO week.
+// EndOfISOWeek returns Sunday of d's ISO week, or an invalid Date beyond
+// the supported range; it does not clip a boundary week to MaxYear.
 func (d Date) EndOfISOWeek() Date {
 	end, _ := d.StartOfISOWeek().AddDays(6)
 	return end
@@ -94,7 +96,8 @@ func (d Date) StartOfISOYear() Date {
 	return w.FirstDate()
 }
 
-// EndOfISOYear returns Sunday of the last week in d's ISO week-year.
+// EndOfISOYear returns Sunday of the last week in d's ISO week-year, or
+// an invalid Date if that Sunday is outside the supported civil range.
 func (d Date) EndOfISOYear() Date {
 	year, _ := d.ISOWeek()
 	w, err := NewISOWeek(year, isoWeeksInYear(year))

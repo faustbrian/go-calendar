@@ -8,6 +8,7 @@ import (
 	"github.com/faustbrian/go-calendar/v2/business"
 )
 
+// FuzzHolidayData checks admitted names/metadata remain isolated from caller mutation.
 func FuzzHolidayData(f *testing.F) {
 	f.Add("Holiday", "region", "FI")
 	f.Add(string([]byte{0xff}), "key", "value")
@@ -24,6 +25,8 @@ func FuzzHolidayData(f *testing.F) {
 	})
 }
 
+// FuzzCalendarConfiguration checks revision/weekend validation returns only valid
+// admitted calendars.
 func FuzzCalendarConfiguration(f *testing.F) {
 	f.Add("revision-1", int8(time.Saturday))
 	f.Fuzz(func(t *testing.T, revision string, rawWeekday int8) {
