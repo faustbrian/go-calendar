@@ -5,10 +5,13 @@ versioning.
 
 ## Unreleased
 
+## 2.0.1 - 2026-10-13
+
 ### Fixed
 
 - Restore the documented Sunday fallback for an invalid Date's Weekday,
   preserving valid-date weekday queries and invalid-date admission checks.
+  ([250efeabaf](https://github.com/faustbrian/go-calendar/commit/250efeabafd294e09d0651d2cd720addfa6edec4))
 - Preserve prior observed/source-date metadata when Observe copies holidays
   under every observance policy, including NoObservance. Reprocessing original
   weekend entries can still append duplicate observations.
@@ -17,6 +20,38 @@ versioning.
 
 - Clarify civil/week boundaries, observance copying, timezone sampling, mutable
   decoder ownership and caller-supplied provenance without runtime changes.
+  ([b163c009d1](https://github.com/faustbrian/go-calendar/commit/b163c009d16f5fe99aed21a3ec168a4baf4c1ef3))
+
+- Make cross-platform civil/timezone and PostgreSQL release qualification explicit
+  while retaining ordinary-event scope.
+  ([9c094d0fbc](https://github.com/faustbrian/go-calendar/commit/9c094d0fbcba0dc6a2ccbd64ae59d97642357b3c))
+- Use patched Go 1.27.2 verification and bounded published-tool checks while
+  retaining the Go 1.27.0 public module minimum.
+  ([4e929f5aee](https://github.com/faustbrian/go-calendar/commit/4e929f5aeec2fafe2611d2dd918c3282a4448ed5))
+- Adopt pinned source-documentation and supply-chain tooling, including aligned
+  manual qualification.
+  ([b818fd1fab](https://github.com/faustbrian/go-calendar/commit/b818fd1fab38838ad844f342b72de2c7aa19a47d),
+  [a50cfbc48d](https://github.com/faustbrian/go-calendar/commit/a50cfbc48d99e561b78b828724889bc0e17e3be1),
+  [ce06d238df](https://github.com/faustbrian/go-calendar/commit/ce06d238dfa86a8fc7282f209b11774f61abee21))
+- Standardize the shared repository development policy.
+  ([b75b609f7c](https://github.com/faustbrian/go-calendar/commit/b75b609f7c4ed57523707754f8d1911e01bca642))
+- Monitor documentation dependency updates.
+  ([0bf02b80ca](https://github.com/faustbrian/go-calendar/commit/0bf02b80ca73f3af15f23d8118ff2b470976e54c))
+
+### Security
+
+- Update the development-only smol-toml parser to its patched version.
+  ([e45c2bc6a6](https://github.com/faustbrian/go-calendar/commit/e45c2bc6a6b168f91e7d49cca4792d5dd5176402))
+- Harden pinned documentation workflows and disable persisted checkout credentials
+  in release qualification jobs.
+  ([26de31c2eb](https://github.com/faustbrian/go-calendar/commit/26de31c2eba8cce57317b5236e24b67cd0776233),
+  [c6f930b7ce](https://github.com/faustbrian/go-calendar/commit/c6f930b7cec256023cf520e938dd28cd22d7380f))
+
+### Documentation
+
+- Clarify the published v2 security scope and improve package adoption navigation.
+  ([175ad27068](https://github.com/faustbrian/go-calendar/commit/175ad27068a8006ff6e8b5706da595a86da28cd3),
+  [fca5fcf0c1](https://github.com/faustbrian/go-calendar/commit/fca5fcf0c1248586a554b7b08781424f1ac94def))
 
 ## 2.0.0 - 2026-10-01
 

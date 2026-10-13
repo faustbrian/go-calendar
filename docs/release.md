@@ -18,7 +18,8 @@
    process. This repository has no automatic release-publisher workflow. Bind
    the module ZIP, exact go.mod, SBOM, provenance, checksum manifest, and trusted
    checksum signature to the release source, then verify the actual public
-   release and a clean public consumer. Preparing v2.0.0 is not publication.
+   release and a clean public consumer. Preparing the v2.0.1 patch candidate
+   is not publication.
 
 No release proceeds with a surviving curated mutation, coverage below 100.0%,
 an unexplained timezone corpus change, missing provenance, or a skipped blocking
