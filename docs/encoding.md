@@ -1,5 +1,8 @@
 # Encoding
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 `Date` text is exactly ten ASCII bytes in `YYYY-MM-DD`. JSON is exactly a JSON
 string containing that text. The zero date, `null`, invalid UTF-8, impossible
 dates, non-ASCII digits, trailing input, and years outside 0001–9999 fail.

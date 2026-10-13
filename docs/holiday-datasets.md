@@ -1,5 +1,8 @@
 # Holiday datasets
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 No holiday dataset is bundled. Applications supply calendars because one
 country does not have one universal business policy.
 

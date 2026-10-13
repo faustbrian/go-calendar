@@ -1,5 +1,8 @@
 # Adapters
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 Canonical adapters use target-oriented paths:
 
 | Capability | Canonical import | Deprecated compatibility import |

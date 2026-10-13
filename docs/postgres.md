@@ -1,5 +1,8 @@
 # PostgreSQL
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 Import `github.com/faustbrian/go-calendar/v2/adapters/postgres` and use
 `calendarpostgres.NewDate` for a finite non-null PostgreSQL `date`. The adapter
 implements `database/sql.Scanner`, `driver.Valuer`, `pgtype.DateScanner`, and

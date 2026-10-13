@@ -1,5 +1,8 @@
 # Clock and temporal composition
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 `calendarclock.Today` accepts only `Now() time.Time` and an explicit location.
 That structural interface is satisfied by `clock.Clock` without importing
 timer, ticker, or sleep ownership.

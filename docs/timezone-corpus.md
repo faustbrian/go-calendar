@@ -1,5 +1,8 @@
 # Timezone compatibility corpus
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 The public `calendartest.TransitionVectors` corpus is deliberately small enough
 to review and broad enough to detect transition-policy or tzdata drift.
 

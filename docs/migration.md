@@ -1,5 +1,8 @@
 # Adapter migration
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Five-minute guide](quickstart.md)
+
 The target-oriented adapter paths are additive. Existing programs may migrate
 one import at a time without changing constructors, methods, constants,
 sentinel checks, serialization, ownership, or concurrency behavior.

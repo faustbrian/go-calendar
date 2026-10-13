@@ -1,5 +1,8 @@
 # Gregorian and ISO truth vectors
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 The calendar is proleptic Gregorian: the Gregorian rule applies before its
 historical civil adoption and there is no 1582 cutover gap.
 

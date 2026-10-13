@@ -1,5 +1,8 @@
 # Versioning and persisted meaning
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Five-minute guide](quickstart.md)
+
 Calendar APIs follow semantic versioning after v1. Business calendars carry an
 application-supplied revision independently from the Go module version.
 

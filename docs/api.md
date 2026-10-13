@@ -1,5 +1,8 @@
 # API reference
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Operations](operations.md)
+
 ## Root package
 
 - `Date`: immutable civil date; strict constructors, comparison, Gregorian and

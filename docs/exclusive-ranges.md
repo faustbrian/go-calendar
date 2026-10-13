@@ -1,5 +1,8 @@
 # Exclusive day ranges
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 Never invent `23:59:59.999999999` as an end-of-day value. Civil days vary in
 elapsed length and local wall times can be skipped or repeated.
 

@@ -1,5 +1,8 @@
 # Release process
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 1. Use a clean tree and the pinned Go 1.27.2 release producer. The public module
    minimum remains Go 1.27.0.
 2. Update [CHANGELOG.md](../CHANGELOG.md) and version guidance.

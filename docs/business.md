@@ -1,5 +1,8 @@
 # Business calendars
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 A calendar requires a non-empty revision and owns copies of weekend and holiday
 inputs. A country code is never treated as a complete calendar identity.
 

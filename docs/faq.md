@@ -1,5 +1,8 @@
 # FAQ
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 ## Why is `Date` not `time.Time` at midnight?
 
 Midnight requires a location and can be skipped. A civil date is not an instant.

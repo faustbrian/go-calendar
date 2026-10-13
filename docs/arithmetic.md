@@ -1,5 +1,8 @@
 # Calendar arithmetic
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 `AddDays(1)` means the following civil date. It never means 24 elapsed hours.
 
 | Source | Operation | Clamp | Reject | Overflow |

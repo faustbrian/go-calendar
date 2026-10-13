@@ -1,5 +1,8 @@
 # Timezones and DST
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 Civil dates carry no location. An instant is produced only from a
 `timezone.LocalDateTime`, an explicit `*time.Location`, and a resolution policy.
 

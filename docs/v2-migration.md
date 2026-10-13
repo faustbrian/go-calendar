@@ -1,5 +1,8 @@
 # V2 migration
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Five-minute guide](quickstart.md)
+
 This guide describes v2.0.0 source on main. Public tags and GitHub releases
 establish publication status; do not infer publication from this guide.
 Production source remains at the repository root, without version directories

@@ -1,5 +1,8 @@
 # Performance
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 Benchmarks run through `golib check --module .`. On an Apple M4 Max with Go 1.26.5, representative
 local measurements were approximately:
 

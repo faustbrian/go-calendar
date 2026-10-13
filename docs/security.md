@@ -1,5 +1,8 @@
 # Security threat model and risk register
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Operations](operations.md)
+
 Version: `CALENDAR-TM-2.0`
 
 Scope updated: 2026-10-04. Root v2.0.0 was published on 2026-10-01;

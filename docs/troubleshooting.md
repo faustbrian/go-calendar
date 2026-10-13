@@ -1,5 +1,8 @@
 # Troubleshooting
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 ## `ErrInvalidDate`
 
 Check the 1–9999 range, Gregorian month length, and zero values. Parsing accepts

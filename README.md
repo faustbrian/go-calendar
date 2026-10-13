@@ -1,11 +1,8 @@
 # calendar
 
 [![CI](https://github.com/faustbrian/go-calendar/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/faustbrian/go-calendar/actions/workflows/ci.yml)
-[![CodeQL](https://img.shields.io/badge/CodeQL-required-blue)](https://github.com/faustbrian/go-calendar/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-100%25_required-blue)](CONTRIBUTING.md#verification)
-[![Mutation](https://img.shields.io/badge/mutation-local_and_scheduled-blue)](CONTRIBUTING.md#verification)
-[![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
-[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-calendar.svg)](https://pkg.go.dev/github.com/faustbrian/go-calendar)
+[![Documentation](https://img.shields.io/badge/docs-adoption_and_API-blue)](docs/index.md)
+[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-calendar/v2.svg)](https://pkg.go.dev/github.com/faustbrian/go-calendar/v2)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-calendar?sort=semver)](https://github.com/faustbrian/go-calendar/releases)
 [![Go](https://img.shields.io/badge/go-1.27.0-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -14,7 +11,7 @@
 typed calendar periods, explicit DST conversion, and bounded business
 calendars for Go 1.27.0 and later.
 
-Main contains v2.0.0 under `github.com/faustbrian/go-calendar/v2`. Public tags
+The published v2.0.0 module uses `github.com/faustbrian/go-calendar/v2`. Public tags
 and GitHub releases establish publication status; source documentation alone
 does not. V1.1.0 remains available under the original module path.
 See the [v2 migration guide](docs/v2-migration.md) before changing
@@ -52,6 +49,16 @@ Start with the [five-minute guide](docs/quickstart.md), then use the
 [API guide](docs/api.md), [timezone guide](docs/timezone.md), and
 [business-calendar guide](docs/business.md).
 
+## Adoption entry points
+
+The root module is `github.com/faustbrian/go-calendar/v2` (stable).
+It requires Go 1.27.0. Pin the published `v2.0.0` root tag
+with `go get github.com/faustbrian/go-calendar/v2@v2.0.0`.
+Root subpackages share this module; they need no separate installation.
+
+Start with the [documentation map](docs/index.md) for package selection,
+examples, operational constraints, and contributor references.
+
 ## Boundaries
 
 - `clock` owns current time; [adapters/clock](adapters/clock) accepts its
@@ -79,8 +86,8 @@ optional local mutation, service and release boundaries, and
 [verification](docs/verification.md) for the retained behavioral evidence.
 
 For ecosystem-wide selection and ownership guidance, see the versioned
-[Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md)
-and its [Domain utilities family](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/design-language.md#package-families-and-selection).
+[Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.8.4/docs/ecosystem/README.md)
+and its [Domain utilities family](https://github.com/faustbrian/go-library-tools/blob/v1.8.4/docs/ecosystem/design-language.md#package-families-and-selection).
 
 ## License
 

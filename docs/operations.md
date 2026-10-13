@@ -1,5 +1,8 @@
 # Operations
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 Use the Go 1.27.2 CI producer and the public `golib` release declared by
 `.golib.yaml`; the module minimum remains Go 1.27.0. Run
 `make check-full` for relevant release qualification and after OS, container,

@@ -1,5 +1,8 @@
 # Five-minute guide
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Operations](operations.md)
+
 ## Civil dates
 
 Construct from validated components or strict ASCII `YYYY-MM-DD` text:

@@ -1,5 +1,8 @@
 # Verification
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: API reference](api.md)
+
 | Requirement | Authoritative local evidence |
 | --- | --- |
 | Gregorian and ISO correctness | Exhaustive years 1–9999 differential test |

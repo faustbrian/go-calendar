@@ -1,5 +1,8 @@
 # Migrating from Carbon
 
+[Documentation map](index.md) · [Repository README](../README.md)
+[Next: Five-minute guide](quickstart.md)
+
 | Carbon-style behavior | calendar replacement |
 | --- | --- |
 | Mutable fluent date | Immutable returned value plus error |
