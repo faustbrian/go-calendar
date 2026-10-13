@@ -172,9 +172,14 @@ func (d Date) DaysInMonth() int {
 	return daysInMonth(d.Year(), d.Month())
 }
 
-// Weekday returns d's weekday. It returns time.Monday for an invalid Date;
+// Weekday returns d's weekday. It returns time.Sunday for an invalid Date;
 // callers that may hold a zero value should check IsValid first.
-func (d Date) Weekday() time.Weekday { return d.asTime().Weekday() }
+func (d Date) Weekday() time.Weekday {
+	if !d.IsValid() {
+		return time.Sunday
+	}
+	return d.asTime().Weekday()
+}
 
 // DayOfYear returns 1 through 366, or zero for an invalid Date.
 func (d Date) DayOfYear() int {

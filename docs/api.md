@@ -32,8 +32,9 @@
 - `Calendar` deep-copies configuration, requires revision identity, fails
   closed when zero, and supports bounded business-day navigation/counting.
 - `Observe` copies effective input holiday data and appends separately marked
-  observed entries under `NoObservance`, `NextWeekday`, or `NearestWeekday`. Existing
-  observance flags/source links on input are reset; this is not idempotent.
+  observed entries under `NoObservance`, `NextWeekday`, or `NearestWeekday`.
+  Existing observance flags/source dates survive copies under every policy.
+  Reprocessing original weekend entries can append duplicate observations.
 
 ## Persistence and adapters
 

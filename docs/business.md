@@ -8,9 +8,10 @@ inputs. A country code is never treated as a complete calendar identity.
 
 Holiday names, metadata, provenance, and total entries are bounded. Overlapping
 holidays remain separate. Observance never overwrites a source date: generated
-entries carry `SourceDate` and `IsObserved`. Observe rebuilds its input entries
-from effective date/name/metadata and resets any prior observed flags/source
-links; repeated observation is not idempotent. It does not resolve holiday
+entries carry `SourceDate` and `IsObserved`. Observe retains those fields when
+copying previously observed entries under every policy, including `NoObservance`.
+Reprocessing original weekend holidays can append duplicate observations;
+output is not deduplicated. It does not resolve holiday
 collisions or use a configured Calendar weekend policy. The observed-name
 suffix can exceed the name bound; output count is checked after copying.
 

@@ -327,7 +327,7 @@ func (c Calendar) search(d calendar.Date, direction, searchLimit int) (calendar.
 type Observance uint8
 
 const (
-	// NoObservance keeps effective dates unchanged; copies reset prior observance metadata.
+	// NoObservance keeps effective dates and prior observance metadata unchanged.
 	NoObservance Observance = iota + 1
 	// NextWeekday moves Saturday and Sunday holidays to the following Monday.
 	NextWeekday
@@ -335,12 +335,12 @@ const (
 	NearestWeekday
 )
 
-// Observe copies effective source data and appends separately marked entries
-// for weekend observance; it does not use a Calendar's configured weekends or
-// resolve collisions. Existing observed/source flags are reset on input copies,
-// so this is not idempotent on its previous output. The appended observance label
-// can fail the name bound; expanded entry count is checked after copying. Errors
-// return no partial result.
+// Observe copies source holidays with their existing observance metadata and
+// appends separately marked entries for weekend observance. It does not use a
+// Calendar's configured weekends or resolve collisions. Reprocessing original
+// weekend holidays can append duplicate observed entries; output is not deduplicated.
+// The appended label can fail the name bound; expanded entry count is checked
+// after copying. Errors return no partial result.
 func Observe(source []Holiday, policy Observance) ([]Holiday, error) {
 	if cmp.Compare(len(source), MaxHolidays) == 1 {
 		return nil, ErrResourceLimit
@@ -354,6 +354,8 @@ func Observe(source []Holiday, policy Observance) ([]Holiday, error) {
 		if err != nil {
 			return nil, err
 		}
+		copyHoliday.sourceDate = holiday.sourceDate
+		copyHoliday.observed = holiday.observed
 		result = append(result, copyHoliday)
 		observedDate := holiday.date
 		switch policy {

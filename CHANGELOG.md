@@ -5,6 +5,14 @@ versioning.
 
 ## Unreleased
 
+### Fixed
+
+- Restore the documented Sunday fallback for an invalid Date's Weekday,
+  preserving valid-date weekday queries and invalid-date admission checks.
+- Preserve prior observed/source-date metadata when Observe copies holidays
+  under every observance policy, including NoObservance. Reprocessing original
+  weekend entries can still append duplicate observations.
+
 ### Changed
 
 - Clarify civil/week boundaries, observance copying, timezone sampling, mutable

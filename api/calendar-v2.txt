@@ -217,7 +217,7 @@ func (d *Date) UnmarshalText(text []byte) error
     unchanged.
 
 func (d Date) Weekday() time.Weekday
-    Weekday returns d's weekday. It returns time.Monday for an invalid Date;
+    Weekday returns d's weekday. It returns time.Sunday for an invalid Date;
     callers that may hold a zero value should check IsValid first.
 
 func (d Date) Year() int
@@ -820,12 +820,12 @@ func NewHoliday(date calendar.Date, name string, metadata map[string]string) (Ho
     NewHoliday validates and copies holiday data.
 
 func Observe(source []Holiday, policy Observance) ([]Holiday, error)
-    Observe copies effective source data and appends separately marked entries
-    for weekend observance; it does not use a Calendar's configured weekends
-    or resolve collisions. Existing observed/source flags are reset on input
-    copies, so this is not idempotent on its previous output. The appended
-    observance label can fail the name bound; expanded entry count is checked
-    after copying. Errors return no partial result.
+    Observe copies source holidays with their existing observance metadata
+    and appends separately marked entries for weekend observance. It does not
+    use a Calendar's configured weekends or resolve collisions. Reprocessing
+    original weekend holidays can append duplicate observed entries; output is
+    not deduplicated. The appended label can fail the name bound; expanded entry
+    count is checked after copying. Errors return no partial result.
 
 func (h Holiday) Date() calendar.Date
     Date returns the holiday's effective date.
@@ -846,7 +846,7 @@ type Observance uint8
     Observance selects an explicit source-to-observed-date policy.
 
 const (
-	// NoObservance keeps effective dates unchanged; copies reset prior observance metadata.
+	// NoObservance keeps effective dates and prior observance metadata unchanged.
 	NoObservance Observance = iota + 1
 	// NextWeekday moves Saturday and Sunday holidays to the following Monday.
 	NextWeekday

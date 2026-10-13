@@ -23,7 +23,11 @@ intermediate anniversary or month lacks the source day; it never switches to
 clamping silently. Equal valid dates return zero components before policy
 validation. Week/ISO-year boundary helpers return an invalid Date instead of
 clipping a complete week outside years 1–9999; a valid ISOWeek can therefore
-have an unrepresentable final Sunday.
+have an unrepresentable final Sunday. For example, `9999-W52` exists and starts
+on `9999-12-27`, but its Sunday is `10000-01-02`, outside the Date domain.
+`LastDate`, `EndOfISOWeek`, and `EndOfISOYear` return an invalid Date at this
+boundary. Check `IsValid` before constructing a complete civil-date range;
+week identity and membership of representable dates remain valid.
 
 The exhaustive suite checks all 3,652,059 supported dates and differentially
 compares weekday, ordinal, ISO week, leap, and month-length behavior with Go's
